@@ -1,4 +1,5 @@
-﻿using System;
+﻿using goods_server.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,10 @@ namespace goods_server.Service.InterfaceService
 {
     public interface IOrderService
     {
+        Task<bool> CreateOrderAsync(OrderDTO order);
+        Task<IEnumerable<OrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId);
+        Task<bool> UpdateOrderAsync(Guid orderId, OrderDTO order);
+        Task<bool> DeleteOrderAsync(Guid orderId);
     }
+
 }

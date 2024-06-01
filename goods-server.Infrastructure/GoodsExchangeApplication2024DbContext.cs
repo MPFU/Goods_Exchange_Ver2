@@ -56,7 +56,7 @@ public partial class GoodsExchangeApplication2024DbContext : DbContext
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true)
             .Build();
-        connectionString = config.GetConnectionString("PhucDatabase");
+        connectionString = config.GetConnectionString("TruongDatabase");
         return connectionString;
     }
 
