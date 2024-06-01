@@ -32,6 +32,11 @@ namespace goods_server.Service.Services
                 account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(register.PasswordHash);
                 account.Status = "Active";
                 account.AccountId = Guid.NewGuid();
+                var check = await _unitOfWork.AccountRepo.GetByEmailAsync(account.Email);
+                if(check != null)
+                {
+                    return false;
+                }
                 await _unitOfWork.AccountRepo.AddAsync(account);
                 var result = await _unitOfWork.SaveAsync() > 0;
                 return result;

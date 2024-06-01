@@ -1,4 +1,5 @@
-﻿using System;
+﻿using goods_server.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,9 @@ namespace goods_server.Service.InterfaceService
 {
     public interface IProductService
     {
+        public Task<GetProductDTO> GetProduct(Guid id);
+        public Task<bool> CreateProduct(CreateProductDTO createProductDTO);
+        
+        public Task<bool> DeleteProduct(Guid id);
     }
 }
