@@ -25,11 +25,13 @@ namespace goods_server.Service.Services
         public async Task<bool> CreateCommentAsync(CommentDTO commentDto)
         {
             var comment = _mapper.Map<Comment>(commentDto);
+            comment.CommentId = Guid.NewGuid(); // Tạo một Guid mới
             comment.PostDate = DateTime.UtcNow;
             await _unitOfWork.CommentRepo.AddAsync(comment);
             var result = await _unitOfWork.SaveAsync() > 0;
             return result;
         }
+
 
         public async Task<IEnumerable<CommentDTO>> GetCommentsByAccountIdAsync(Guid accountId)
         {
