@@ -11,6 +11,7 @@ namespace goods_server.Service.InterfaceService
     {
         Task<bool> CreateReportAsync(ReportDTO report);
         Task<IEnumerable<ReportDTO>> GetReportsByAccountIdAsync(Guid accountId);
+        Task<IEnumerable<ReportDTO>> GetAllReportsAsync();
         Task<bool> UpdateReportAsync(Guid reportId, ReportDTO report);
         Task<bool> DeleteReportAsync(Guid reportId);
     }

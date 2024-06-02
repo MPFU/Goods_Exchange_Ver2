@@ -47,6 +47,12 @@ namespace goods_server.Service.Services
         {
             return await _unitOfWork.RequestHistoryRepo.DeleteRequestHistoryAsync(requestId);
         }
+
+        public async Task<IEnumerable<RequestHistoryDTO>> GetAllRequestHistoriesAsync()
+        {
+            var requestHistories = await _unitOfWork.RequestHistoryRepo.GetAllAsync();
+            return _mapper.Map<IEnumerable<RequestHistoryDTO>>(requestHistories);
+        }
     }
 
 

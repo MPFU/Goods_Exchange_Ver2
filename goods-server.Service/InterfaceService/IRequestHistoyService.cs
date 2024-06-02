@@ -11,6 +11,7 @@ namespace goods_server.Service.InterfaceService
     {
         Task<bool> CreateRequestHistoryAsync(RequestHistoryDTO requestHistory);
         Task<IEnumerable<RequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(Guid accountId);
+        Task<IEnumerable<RequestHistoryDTO>> GetAllRequestHistoriesAsync();
         Task<bool> UpdateRequestHistoryAsync(Guid requestId, RequestHistoryDTO requestHistory);
         Task<bool> DeleteRequestHistoryAsync(Guid requestId);
 

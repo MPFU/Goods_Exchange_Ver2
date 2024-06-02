@@ -47,6 +47,13 @@ namespace goods_server.Service.Services
         {
             return await _unitOfWork.ReportRepo.DeleteReportAsync(reportId);
         }
+
+        public async Task<IEnumerable<ReportDTO>> GetAllReportsAsync()
+        {
+            var reports = await _unitOfWork.ReportRepo.GetAllAsync();
+            return _mapper.Map<IEnumerable<ReportDTO>>(reports);
+        }
     }
+
 
 }

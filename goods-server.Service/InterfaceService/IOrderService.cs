@@ -11,6 +11,7 @@ namespace goods_server.Service.InterfaceService
     {
         Task<bool> CreateOrderAsync(OrderDTO order);
         Task<IEnumerable<OrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId);
+        Task<IEnumerable<OrderDTO>> GetAllOrdersAsync();
         Task<bool> UpdateOrderAsync(Guid orderId, OrderDTO order);
         Task<bool> DeleteOrderAsync(Guid orderId);
     }

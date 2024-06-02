@@ -106,5 +106,11 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllRequestHistories()
+        {
+            var requestHistories = await _requestHistoryService.GetAllRequestHistoriesAsync();
+            return Ok(requestHistories);
+        }
     }
 }

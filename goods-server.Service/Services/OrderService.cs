@@ -47,6 +47,12 @@ namespace goods_server.Service.Services
         {
             return await _unitOfWork.OrderRepo.DeleteOrderAsync(orderId);
         }
+
+        public async Task<IEnumerable<OrderDTO>> GetAllOrdersAsync()
+        {
+            var orders = await _unitOfWork.OrderRepo.GetAllAsync();
+            return _mapper.Map<IEnumerable<OrderDTO>>(orders);
+        }
     }
 
 }
