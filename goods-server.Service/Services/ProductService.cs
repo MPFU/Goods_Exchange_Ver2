@@ -64,5 +64,79 @@ namespace goods_server.Service.Services
             var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
             return _mapper.Map<GetProductDTO>(product);
         }
+
+        public async Task<bool> UpdateProduct(Guid id ,UpdateProductDTO updateProductDTO)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                if (product != null)
+                {
+                    product.Title = updateProductDTO.Title;
+                    product.Description = updateProductDTO.Description;
+                    product.Price = updateProductDTO.Price;
+                    product.CategoryId = updateProductDTO.CategoryId;
+                    product.ImagePro = (updateProductDTO.ImagePro != null) ? updateProductDTO.ImagePro : product.ImagePro;
+                    product.Discount = updateProductDTO.Discount;
+                    product.Quantity = updateProductDTO.Quantity;
+                    product.CityId = updateProductDTO.CityId;
+                    product.GenreId = updateProductDTO.GenreId;
+                    product.Status = updateProductDTO.Status;
+                    product.IsDisplay = updateProductDTO.IsDisplay;
+                    _unitOfWork.ProductRepo.Update(product);
+                    var result = await _unitOfWork.SaveAsync() > 0;
+                    return result;
+                }
+                return false;
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateRatingCommentProduct(Guid id, UpdateRatingProductDTO productDTO)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                if (product != null)
+                {
+                    product.Rated = (productDTO.Rated != null) ? productDTO.Rated : product.Rated;
+                    product.RatedCount = (productDTO.RatedCount != null) ? productDTO.RatedCount : product.RatedCount;
+                    product.CommentCount = (productDTO.CommentCount != null) ? productDTO.CommentCount : product.CommentCount;
+                    _unitOfWork.ProductRepo.Update(product);
+                    var result = await _unitOfWork.SaveAsync() > 0;
+                    return result;
+                }
+                return false;
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateStatusProduct(Guid id, UpdateStatusProductDTO productDTO)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                if (product != null)
+                {
+                    product.DenyRes = productDTO.DenyRes;
+                    product.Status = productDTO.Status;
+                    product.IsDisplay = productDTO.IsDisplay;
+                    _unitOfWork.ProductRepo.Update(product);
+                    var result = await _unitOfWork.SaveAsync() > 0;
+                    return result;
+                }
+                return false;
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+        }
     }
 }

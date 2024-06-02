@@ -87,10 +87,10 @@ namespace goods_server.Service.Services
             return _mapper.Map<GetAccountDTO>(account);
         }
 
-        public async Task<AccountDTO?> GetAccountByUsernameAsync(string username)
+        public async Task<GetAccount2DTO?> GetAccountByUsernameAsync(string username)
         {
             var account = await _unitOfWork.AccountRepo.GetByUsernameAsync(username);
-            return _mapper.Map<AccountDTO>(account);
+            return _mapper.Map<GetAccount2DTO>(account);
         }
 
         public async Task<IEnumerable<AccountDTO>> SearchAccountsAsync(string username)
@@ -111,7 +111,7 @@ namespace goods_server.Service.Services
                 if (account2 != null)
                 {
                     account2.Email = account.Email;
-                    account2.AvatarUrl = account.AvatarUrl;
+                    account2.AvatarUrl = (account.AvatarUrl != null) ? account.AvatarUrl : account2.AvatarUrl;
                     account2.PhoneNumber = account.PhoneNumber;
                     account2.UserName = account.UserName;
                     account2.FullName = account.FullName;

@@ -12,7 +12,7 @@ namespace goods_server.Service.InterfaceService
     {
         Task<AccountDTO?> GetAccountByEmailAsync(string email);
 
-        Task<AccountDTO?> GetAccountByUsernameAsync(string username);
+        Task<GetAccount2DTO?> GetAccountByUsernameAsync(string username);
 
         Task<GetAccountDTO?> GetAccountByEmailAndPasswordAsync(string email, string password);
 
