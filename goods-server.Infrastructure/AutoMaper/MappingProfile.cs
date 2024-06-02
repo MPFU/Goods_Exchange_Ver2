@@ -18,18 +18,31 @@ namespace goods_server.Infrastructure.AutoMaper
             CreateMap<Account, GetAccountDTO>().ReverseMap();
             CreateMap<RegisterDTO, Account>();
             CreateMap<Account, GetAccount2DTO>().ReverseMap();
+  			
+            // COMMENT
+            CreateMap<Comment, CommentDTO>().ReverseMap();
+            CreateMap<Comment, UpdateCommentDTO>().ReverseMap();
 
-            // REPLYCOMMENT
-            CreateMap<CreateReplyDTO, ReplyComment>();
-            CreateMap<ReplyComment, GetReplyCommentDTO>().ReverseMap();
+            // REQUEST HISTORY
+            CreateMap<RequestHistory, RequestHistoryDTO>().ReverseMap();
+            CreateMap<RequestHistory, UpdateRequestHistoryDTO>().ReverseMap();
 
-// PRODUCT
+            // ORDER
+            CreateMap<Order, OrderDTO>().ReverseMap();
+            CreateMap<Order, UpdateOrderDTO>().ReverseMap();
+
+            // REPORT
+            CreateMap<Report, ReportDTO>().ReverseMap();
+            CreateMap<Report, UpdateReportDTO>().ReverseMap();
+
+           // PRODUCT
             CreateMap<CreateProductDTO, Product>();
             CreateMap<Product,GetProductDTO>().ReverseMap();
 
             // ROLE
             CreateMap<Role, RoleDTO>().ReverseMap();
-            CreateMap<Role, GetRoleDTO>().ReverseMap(); // Category Mapping
+            CreateMap<Role, GetRoleDTO>().ReverseMap();
+            // Category Mapping
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<CreateCategoryDTO, Category>();
             CreateMap<UpdateCategoryDTO, Category>();
@@ -38,17 +51,22 @@ namespace goods_server.Infrastructure.AutoMaper
             CreateMap<City, CityDTO>().ReverseMap();
             CreateMap<CreateCityDTO, City>();
             CreateMap<UpdateCityDTO, City>();
+
             // Genre Mapping
             CreateMap<Genre, GenreDTO>().ReverseMap();
             CreateMap<CreateGenreDTO, Genre>();
             CreateMap<UpdateGenreDTO, Genre>();
+
             /// OrderDetail Mapping
             CreateMap<OrderDetail, OrderDetailDTO>().ReverseMap();
             CreateMap<CreateOrderDetailDTO, OrderDetail>();
             CreateMap<UpdateOrderDetailDTO, OrderDetail>();
+
             // Rating Mapping
             CreateMap<Rating, RatingDTO>().ReverseMap();
             CreateMap<CreateRatingDTO, Rating>();
-            CreateMap<UpdateRatingDTO, Rating>();        }
+            CreateMap<UpdateRatingDTO, Rating>();
+
+        }
     }
 }
