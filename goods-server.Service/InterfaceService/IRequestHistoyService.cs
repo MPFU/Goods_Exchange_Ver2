@@ -14,6 +14,8 @@ namespace goods_server.Service.InterfaceService
         Task<IEnumerable<RequestHistoryDTO>> GetAllRequestHistoriesAsync();
         Task<bool> UpdateRequestHistoryAsync(Guid requestId, RequestHistoryDTO requestHistory);
         Task<bool> DeleteRequestHistoryAsync(Guid requestId);
+        Task<RequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId);
+
 
     }
 }

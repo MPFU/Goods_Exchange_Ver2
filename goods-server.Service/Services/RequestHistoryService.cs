@@ -25,11 +25,12 @@ namespace goods_server.Service.Services
         public async Task<bool> CreateRequestHistoryAsync(RequestHistoryDTO requestHistoryDto)
         {
             var requestHistory = _mapper.Map<RequestHistory>(requestHistoryDto);
-            requestHistory.CreatedDate = DateTime.UtcNow;
+            requestHistory.Id = Guid.NewGuid(); // Tạo một Guid mới
             await _unitOfWork.RequestHistoryRepo.AddAsync(requestHistory);
             var result = await _unitOfWork.SaveAsync() > 0;
             return result;
         }
+
 
         public async Task<IEnumerable<RequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(Guid accountId)
         {
@@ -53,6 +54,13 @@ namespace goods_server.Service.Services
             var requestHistories = await _unitOfWork.RequestHistoryRepo.GetAllAsync();
             return _mapper.Map<IEnumerable<RequestHistoryDTO>>(requestHistories);
         }
+
+        public async Task<RequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId)
+        {
+            var requestHistory = await _unitOfWork.RequestHistoryRepo.GetRequestHistoryByIdAsync(requestHistoryId);
+            return _mapper.Map<RequestHistoryDTO>(requestHistory);
+        }
+
     }
 
 
