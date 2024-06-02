@@ -17,10 +17,19 @@ namespace goods_server.Infrastructure.AutoMaper
             CreateMap<Account, AccountDTO>().ReverseMap();
             CreateMap<Account, GetAccountDTO>().ReverseMap();
             CreateMap<RegisterDTO, Account>();
+            CreateMap<Account, GetAccount2DTO>().ReverseMap();
 
             // REPLYCOMMENT
             CreateMap<CreateReplyDTO, ReplyComment>();
             CreateMap<ReplyComment, GetReplyCommentDTO>().ReverseMap();
+
+            // PRODUCT
+            CreateMap<CreateProductDTO, Product>();
+            CreateMap<Product,GetProductDTO>().ReverseMap();
+
+            // ROLE
+            CreateMap<Role, RoleDTO>().ReverseMap();
+            CreateMap<Role, GetRoleDTO>().ReverseMap();
         }
     }
 }

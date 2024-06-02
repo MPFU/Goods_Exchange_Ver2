@@ -1,5 +1,6 @@
 ﻿using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,11 @@ namespace goods_server.Infrastructure.Repositories
         public RoleRepository(GoodsExchangeApplication2024DbContext dbContext) : base(dbContext)
         {
             
+        }
+
+        public async Task<Role> GetRoleById(int id)
+        {
+            return await _dbContext.Roles.FirstOrDefaultAsync(x => x.RoleId == id);
         }
     }
 }

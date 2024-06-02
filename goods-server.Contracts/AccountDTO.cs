@@ -65,4 +65,11 @@ namespace goods_server.Contracts
     {
         public Guid AccountId { get; set; }
     }
+
+    public class GetAccount2DTO : AccountDTO
+    {
+        public Guid AccountId { get; set; }
+
+        public GetRoleDTO Role { get; set; }
+    }
 }
