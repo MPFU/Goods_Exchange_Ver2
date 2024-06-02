@@ -23,7 +23,10 @@ namespace goods_server.Infrastructure.Repositories
 
         public async Task<Account?> GetByUsernameAsync(string username)
         {
-            return await _dbContext.Accounts.Where(x => x.UserName == username).FirstOrDefaultAsync();
+            return await _dbContext.Accounts
+                .Include(x => x.Role)
+                .Where(x => x.UserName == username)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Account>> SearchAccountByUsername(string username)

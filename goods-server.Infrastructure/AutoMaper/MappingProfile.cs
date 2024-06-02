@@ -17,12 +17,19 @@ namespace goods_server.Infrastructure.AutoMaper
             CreateMap<Account, AccountDTO>().ReverseMap();
             CreateMap<Account, GetAccountDTO>().ReverseMap();
             CreateMap<RegisterDTO, Account>();
+            CreateMap<Account, GetAccount2DTO>().ReverseMap();
 
             // REPLYCOMMENT
             CreateMap<CreateReplyDTO, ReplyComment>();
             CreateMap<ReplyComment, GetReplyCommentDTO>().ReverseMap();
 
-            // Category Mapping
+// PRODUCT
+            CreateMap<CreateProductDTO, Product>();
+            CreateMap<Product,GetProductDTO>().ReverseMap();
+
+            // ROLE
+            CreateMap<Role, RoleDTO>().ReverseMap();
+            CreateMap<Role, GetRoleDTO>().ReverseMap(); // Category Mapping
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<CreateCategoryDTO, Category>();
             CreateMap<UpdateCategoryDTO, Category>();
@@ -42,7 +49,6 @@ namespace goods_server.Infrastructure.AutoMaper
             // Rating Mapping
             CreateMap<Rating, RatingDTO>().ReverseMap();
             CreateMap<CreateRatingDTO, Rating>();
-            CreateMap<UpdateRatingDTO, Rating>();
-        }
+            CreateMap<UpdateRatingDTO, Rating>();        }
     }
 }
