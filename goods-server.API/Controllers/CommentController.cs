@@ -103,6 +103,23 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [HttpGet("{commentId}")]
+        public async Task<IActionResult> GetCommentById(Guid commentId)
+        {
+            var comment = await _commentService.GetCommentByIdAsync(commentId);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+            return Ok(comment);
+        }
+
+        [HttpGet("product/{productId}")]
+        public async Task<IActionResult> GetCommentsByProductId(Guid productId)
+        {
+            var comments = await _commentService.GetCommentsByProductIdAsync(productId);
+            return Ok(comments);
+        }
 
     }
 

@@ -22,14 +22,16 @@ namespace goods_server.Service.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateOrderAsync(OrderDTO orderDto)
+        public async Task<OrderDTO> CreateOrderAsync(OrderDTO orderDto)
         {
             var order = _mapper.Map<Order>(orderDto);
             order.OrderDate = DateTime.UtcNow;
             await _unitOfWork.OrderRepo.AddAsync(order);
-            var result = await _unitOfWork.SaveAsync() > 0;
-            return result;
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<OrderDTO>(order);
         }
+
+
 
         public async Task<IEnumerable<OrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId)
         {
@@ -53,6 +55,13 @@ namespace goods_server.Service.Services
             var orders = await _unitOfWork.OrderRepo.GetAllAsync();
             return _mapper.Map<IEnumerable<OrderDTO>>(orders);
         }
+
+        public async Task<OrderDTO> GetOrderByIdAsync(Guid orderId)
+        {
+            var order = await _unitOfWork.OrderRepo.GetOrderByIdAsync(orderId);
+            return _mapper.Map<OrderDTO>(order);
+        }
+
     }
 
 }

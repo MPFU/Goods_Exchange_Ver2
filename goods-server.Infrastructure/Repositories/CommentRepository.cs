@@ -48,6 +48,17 @@ namespace goods_server.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Comment> GetCommentByIdAsync(Guid commentId)
+        {
+            return await _dbContext.Comments.FindAsync(commentId);
+        }
+
+        public async Task<IEnumerable<Comment>> GetCommentsByProductIdAsync(Guid productId)
+        {
+            return await _dbContext.Comments.Where(x => x.ProductId == productId).ToListAsync();
+        }
+
     }
 
 

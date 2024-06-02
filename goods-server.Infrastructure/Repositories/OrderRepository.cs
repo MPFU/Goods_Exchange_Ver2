@@ -47,6 +47,12 @@ namespace goods_server.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Order> GetOrderByIdAsync(Guid orderId)
+        {
+            return await _dbContext.Orders.FindAsync(orderId);
+        }
+
     }
 
 }

@@ -13,6 +13,9 @@ namespace goods_server.Service.InterfaceService
         Task<IEnumerable<CommentDTO>> GetCommentsByAccountIdAsync(Guid accountId);
         Task<bool> UpdateCommentAsync(Guid commentId, CommentDTO comment);
         Task<bool> DeleteCommentAsync(Guid commentId);
+        Task<CommentDTO> GetCommentByIdAsync(Guid commentId);
+        Task<IEnumerable<CommentDTO>> GetCommentsByProductIdAsync(Guid productId);
+
 
     }
 

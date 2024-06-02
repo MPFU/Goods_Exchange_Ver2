@@ -13,6 +13,8 @@ namespace goods_server.Core.InterfacesRepo
         Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(Guid customerId);
         Task<bool> UpdateOrderAsync(Guid orderId, Order order);
         Task<bool> DeleteOrderAsync(Guid orderId);
+        Task<Order> GetOrderByIdAsync(Guid orderId);
+
     }
 
 }

@@ -50,6 +50,18 @@ namespace goods_server.Service.Services
             return await _unitOfWork.CommentRepo.DeleteCommentAsync(commentId);
         }
 
+        public async Task<CommentDTO> GetCommentByIdAsync(Guid commentId)
+        {
+            var comment = await _unitOfWork.CommentRepo.GetCommentByIdAsync(commentId);
+            return _mapper.Map<CommentDTO>(comment);
+        }
+
+        public async Task<IEnumerable<CommentDTO>> GetCommentsByProductIdAsync(Guid productId)
+        {
+            var comments = await _unitOfWork.CommentRepo.GetCommentsByProductIdAsync(productId);
+            return _mapper.Map<IEnumerable<CommentDTO>>(comments);
+        }
+
 
     }
 
