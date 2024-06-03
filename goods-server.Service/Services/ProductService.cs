@@ -66,11 +66,61 @@ namespace goods_server.Service.Services
             var proList = _mapper.Map<IEnumerable<GetProductDTO>>(await _unitOfWork.ProductRepo.GetAllProductAsync());
             IQueryable<GetProductDTO> filterPo = proList.AsQueryable();
 
+            //Filtering
+
+            if (!string.IsNullOrEmpty(productFilter.Title))
+                filterPo = filterPo.Where(x => x.Title.Contains(productFilter.Title, StringComparison.OrdinalIgnoreCase));
+
+            if (productFilter.CreatorId != null)
+                filterPo = filterPo.Where(x => x.CreatorId.Equals(productFilter.CreatorId));
+
+            if (productFilter.Price != null)
+                filterPo = filterPo.Where(x => x.Price ==  productFilter.Price);
+
+            if (productFilter.Rated != null)
+                filterPo = filterPo.Where(x => x.Rated == productFilter.Rated);
+
+            if (!string.IsNullOrEmpty(productFilter.Status))
+                filterPo = filterPo.Where(x => x.Status.Contains(productFilter.Status, StringComparison.OrdinalIgnoreCase));
+            
+            // Sorting
+            if (!string.IsNullOrEmpty(productFilter.SortBy))
+            {
+                switch (productFilter.SortBy)
+                {
+                    //case "userName":
+                    //    filterPo = accountFilter.SortAscending ?
+                    //        filterAcc.OrderBy(x => x.UserName) :
+                    //        filterAcc.OrderByDescending(x => x.UserName);
+                    //    break;
+                    //case "joinDate":
+                    //    filterAcc = accountFilter.SortAscending ?
+                    //        filterAcc.OrderBy(x => x.JoinDate) :
+                    //        filterAcc.OrderByDescending(x => x.JoinDate);
+                    //    break;
+                    default:
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(item => GetProperty.GetPropertyValue(item, productFilter.SortBy)) :
+                            filterPo.OrderByDescending(item => GetProperty.GetPropertyValue(item, productFilter.SortBy));
+                        break;
+
+                }
+            }
+
             // Paging
             var pageItems = filterPo
                 .Skip((productFilter.PageNumber - 1) * productFilter.PageSize)
                 .Take(productFilter.PageSize)
                 .ToList();
+
+            return new PagedResult<GetProductDTO>
+            {
+                Items = pageItems,
+                PageNumber = productFilter.PageNumber,
+                PageSize = productFilter.PageSize,
+                TotalItem = proList.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)proList.Count() / (decimal)productFilter.PageSize)
+            };
         }
 
         public async Task<GetProductDTO> GetProduct(Guid id)
