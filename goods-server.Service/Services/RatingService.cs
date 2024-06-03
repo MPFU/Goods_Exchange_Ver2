@@ -26,23 +26,24 @@ namespace goods_server.Service.Services
             return _mapper.Map<IEnumerable<RatingDTO>>(ratings);
         }
 
-        public async Task<RatingDTO?> GetRatingByProductIdAsync(Guid productId)
+        public async Task<RatingDTO?> GetRatingByCustomerAndProductIdAsync(Guid customerId, Guid productId)
         {
-            var rating = await _unitOfWork.RatingRepo.GetByProductIdAsync(productId);
+            var rating = await _unitOfWork.RatingRepo.GetByCustomerAndProductIdAsync(customerId, productId);
             return _mapper.Map<RatingDTO>(rating);
         }
 
         public async Task<bool> CreateRatingAsync(CreateRatingDTO rating)
         {
             var newRating = _mapper.Map<Rating>(rating);
-            newRating.ProductId = rating.ProductId;
+            newRating.Id = Guid.NewGuid();
+            newRating.CreatedDate = DateTime.UtcNow;
             await _unitOfWork.RatingRepo.AddAsync(newRating);
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<bool> UpdateRatingAsync(Guid productId, UpdateRatingDTO rating)
+        public async Task<bool> UpdateRatingAsync(Guid ratingId, UpdateRatingDTO rating)
         {
-            var existingRating = await _unitOfWork.RatingRepo.GetByProductIdAsync(productId);
+            var existingRating = await _unitOfWork.RatingRepo.GetByIdAsync(ratingId);
             if (existingRating == null)
             {
                 return false;
@@ -53,9 +54,9 @@ namespace goods_server.Service.Services
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<bool> DeleteRatingAsync(Guid productId)
+        public async Task<bool> DeleteRatingAsync(Guid ratingId)
         {
-            var rating = await _unitOfWork.RatingRepo.GetByProductIdAsync(productId);
+            var rating = await _unitOfWork.RatingRepo.GetByIdAsync(ratingId);
             if (rating == null)
             {
                 return false;

@@ -5,6 +5,6 @@ namespace goods_server.Core.Interfaces
 {
     public interface IRatingRepo : IGenericRepo<Rating>
     {
-        Task<Rating?> GetByProductIdAsync(Guid productId);
+        Task<Rating?> GetByCustomerAndProductIdAsync(Guid customerId, Guid productId);
     }
 }

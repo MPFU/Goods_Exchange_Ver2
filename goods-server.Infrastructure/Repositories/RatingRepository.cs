@@ -1,7 +1,6 @@
 ﻿using goods_server.Core.Interfaces;
 using goods_server.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading.Tasks;
 
 namespace goods_server.Infrastructure.Repositories
@@ -12,10 +11,9 @@ namespace goods_server.Infrastructure.Repositories
         {
         }
 
-        public async Task<Rating?> GetByProductIdAsync(Guid productId)
+        public async Task<Rating?> GetByCustomerAndProductIdAsync(Guid customerId, Guid productId)
         {
-            return await _dbContext.Ratings.FirstOrDefaultAsync(r => r.ProductId == productId);
+            return await _dbContext.Ratings.FirstOrDefaultAsync(r => r.CustomerId == customerId && r.ProductId == productId);
         }
     }
 }
-    

@@ -2,21 +2,25 @@
 {
     public class RatingDTO
     {
-        public Guid ProductId { get; set; }
-        public int Stars { get; set; }
-        public string Comment { get; set; }
+        public Guid Id { get; set; }
+        public Guid? CustomerId { get; set; }
+        public Guid? ProductId { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string? Descript { get; set; }
+        public int? Rated { get; set; }
     }
 
     public class CreateRatingDTO
     {
-        public Guid ProductId { get; set; }
-        public int Stars { get; set; }
-        public string Comment { get; set; }
+        public Guid? CustomerId { get; set; }
+        public Guid? ProductId { get; set; }
+        public string? Descript { get; set; }
+        public int? Rated { get; set; }
     }
 
     public class UpdateRatingDTO
     {
-        public int Stars { get; set; }
-        public string Comment { get; set; }
+        public string? Descript { get; set; }
+        public int? Rated { get; set; }
     }
 }

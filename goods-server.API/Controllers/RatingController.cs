@@ -24,10 +24,10 @@ namespace goods_server.API.Controllers
             return Ok(ratings);
         }
 
-        [HttpGet("{productId}")]
-        public async Task<IActionResult> GetRatingByProductId(Guid productId)
+        [HttpGet("{customerId}/{productId}")]
+        public async Task<IActionResult> GetRatingByCustomerAndProductId(Guid customerId, Guid productId)
         {
-            var rating = await _ratingService.GetRatingByProductIdAsync(productId);
+            var rating = await _ratingService.GetRatingByCustomerAndProductIdAsync(customerId, productId);
             if (rating == null)
             {
                 return NotFound();
@@ -46,10 +46,10 @@ namespace goods_server.API.Controllers
             return BadRequest("Failed to create rating.");
         }
 
-        [HttpPut("{productId}")]
-        public async Task<IActionResult> UpdateRating(Guid productId, [FromBody] UpdateRatingDTO updateRatingDTO)
+        [HttpPut("{ratingId}")]
+        public async Task<IActionResult> UpdateRating(Guid ratingId, [FromBody] UpdateRatingDTO updateRatingDTO)
         {
-            var result = await _ratingService.UpdateRatingAsync(productId, updateRatingDTO);
+            var result = await _ratingService.UpdateRatingAsync(ratingId, updateRatingDTO);
             if (result)
             {
                 return Ok("Rating updated successfully.");
@@ -57,10 +57,10 @@ namespace goods_server.API.Controllers
             return BadRequest("Failed to update rating.");
         }
 
-        [HttpDelete("{productId}")]
-        public async Task<IActionResult> DeleteRating(Guid productId)
+        [HttpDelete("{ratingId}")]
+        public async Task<IActionResult> DeleteRating(Guid ratingId)
         {
-            var result = await _ratingService.DeleteRatingAsync(productId);
+            var result = await _ratingService.DeleteRatingAsync(ratingId);
             if (result)
             {
                 return Ok("Rating deleted successfully.");

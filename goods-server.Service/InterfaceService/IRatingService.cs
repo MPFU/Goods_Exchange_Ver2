@@ -7,9 +7,9 @@ namespace goods_server.Service.InterfaceService
     public interface IRatingService
     {
         Task<IEnumerable<RatingDTO>> GetAllRatingsAsync();
-        Task<RatingDTO?> GetRatingByProductIdAsync(Guid productId);
+        Task<RatingDTO?> GetRatingByCustomerAndProductIdAsync(Guid customerId, Guid productId);
         Task<bool> CreateRatingAsync(CreateRatingDTO rating);
-        Task<bool> UpdateRatingAsync(Guid productId, UpdateRatingDTO rating);
-        Task<bool> DeleteRatingAsync(Guid productId);
+        Task<bool> UpdateRatingAsync(Guid ratingId, UpdateRatingDTO rating);
+        Task<bool> DeleteRatingAsync(Guid ratingId);
     }
 }
