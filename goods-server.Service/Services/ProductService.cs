@@ -61,10 +61,10 @@ namespace goods_server.Service.Services
             }
         }
 
-        public async Task<PagedResult<GetProductDTO>> GetAllProductAsync<T>(ProductFilter productFilter)
+        public async Task<PagedResult<GetProduct2DTO>> GetAllProductAsync<T>(ProductFilter productFilter)
         {
-            var proList = _mapper.Map<IEnumerable<GetProductDTO>>(await _unitOfWork.ProductRepo.GetAllProductAsync());
-            IQueryable<GetProductDTO> filterPo = proList.AsQueryable();
+            var proList = _mapper.Map<IEnumerable<GetProduct2DTO>>(await _unitOfWork.ProductRepo.GetAllProductAsync());
+            IQueryable<GetProduct2DTO> filterPo = proList.AsQueryable();
 
             //Filtering
 
@@ -82,22 +82,39 @@ namespace goods_server.Service.Services
 
             if (!string.IsNullOrEmpty(productFilter.Status))
                 filterPo = filterPo.Where(x => x.Status.Contains(productFilter.Status, StringComparison.OrdinalIgnoreCase));
-            
+
+            if (!string.IsNullOrEmpty(productFilter.GenreName))
+                filterPo = filterPo.Where(x => x.Genre.Name.Contains(productFilter.GenreName));
+
+            if (!string.IsNullOrEmpty(productFilter.CityName))
+                filterPo = filterPo.Where(x => x.City.Name.Contains(productFilter.CityName));
+
+            if (!string.IsNullOrEmpty(productFilter.CategoryName))
+                filterPo = filterPo.Where(x => x.Category.Name.Contains(productFilter.CategoryName));
+
             // Sorting
             if (!string.IsNullOrEmpty(productFilter.SortBy))
             {
                 switch (productFilter.SortBy)
                 {
-                    //case "userName":
-                    //    filterPo = accountFilter.SortAscending ?
-                    //        filterAcc.OrderBy(x => x.UserName) :
-                    //        filterAcc.OrderByDescending(x => x.UserName);
-                    //    break;
-                    //case "joinDate":
-                    //    filterAcc = accountFilter.SortAscending ?
-                    //        filterAcc.OrderBy(x => x.JoinDate) :
-                    //        filterAcc.OrderByDescending(x => x.JoinDate);
-                    //    break;
+                    case "price":
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(x => x.Price) :
+                            filterPo.OrderByDescending(x => x.Price);
+                        break;
+
+                    case "createdDate":
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(x => x.CreatedDate) :
+                            filterPo.OrderByDescending(x => x.CreatedDate);
+                        break;
+
+                    case "rated":
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(x => x.Rated) :
+                            filterPo.OrderByDescending(x => x.Rated);
+                        break;
+
                     default:
                         filterPo = productFilter.SortAscending ?
                             filterPo.OrderBy(item => GetProperty.GetPropertyValue(item, productFilter.SortBy)) :
@@ -113,7 +130,7 @@ namespace goods_server.Service.Services
                 .Take(productFilter.PageSize)
                 .ToList();
 
-            return new PagedResult<GetProductDTO>
+            return new PagedResult<GetProduct2DTO>
             {
                 Items = pageItems,
                 PageNumber = productFilter.PageNumber,

@@ -38,6 +38,7 @@ namespace goods_server.Infrastructure.AutoMaper
            // PRODUCT
             CreateMap<CreateProductDTO, Product>();
             CreateMap<Product,GetProductDTO>().ReverseMap();
+            CreateMap<Product, GetProduct2DTO>().ReverseMap();
 
             // ROLE
             CreateMap<Role, RoleDTO>().ReverseMap();
