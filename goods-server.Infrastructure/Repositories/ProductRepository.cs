@@ -1,5 +1,6 @@
 ﻿using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,15 @@ namespace goods_server.Infrastructure.Repositories
         public ProductRepository(GoodsExchangeApplication2024DbContext dbContext) : base(dbContext)
         {
             
+        }
+
+        public async Task<IEnumerable<Product>> GetAllProductAsync()
+        {
+            return await _dbContext.Products
+                .Include(x => x.City)
+                .Include(x => x.Category)
+                .Include(x => x.Genre)
+                .ToListAsync();
         }
     }
 }

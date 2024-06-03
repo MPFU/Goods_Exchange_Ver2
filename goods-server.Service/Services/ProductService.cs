@@ -2,6 +2,8 @@
 using goods_server.Contracts;
 using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel;
+using goods_server.Service.FilterModel.Helper;
 using goods_server.Service.InterfaceService;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -57,6 +59,18 @@ namespace goods_server.Service.Services
             {
                 throw;
             }
+        }
+
+        public async Task<PagedResult<GetProductDTO>> GetAllProductAsync<T>(ProductFilter productFilter)
+        {
+            var proList = _mapper.Map<IEnumerable<GetProductDTO>>(await _unitOfWork.ProductRepo.GetAllProductAsync());
+            IQueryable<GetProductDTO> filterPo = proList.AsQueryable();
+
+            // Paging
+            var pageItems = filterPo
+                .Skip((productFilter.PageNumber - 1) * productFilter.PageSize)
+                .Take(productFilter.PageSize)
+                .ToList();
         }
 
         public async Task<GetProductDTO> GetProduct(Guid id)

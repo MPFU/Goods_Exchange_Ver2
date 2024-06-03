@@ -10,5 +10,6 @@ namespace goods_server.Core.InterfacesRepo
 {
     public interface IProductRepo : IGenericRepo<Product>
     {
+        Task<IEnumerable<Product>> GetAllProductAsync();
     }
 }

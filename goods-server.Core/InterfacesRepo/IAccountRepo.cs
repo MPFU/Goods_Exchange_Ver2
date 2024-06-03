@@ -12,5 +12,6 @@ namespace goods_server.Core.Interfaces
         Task<Account?> GetByEmailAsync(string email);
         Task<IEnumerable<Account>> SearchAccountByUsername(string username);
         Task<Account?> GetByUsernameAsync(string username);
+        Task<IEnumerable<Account>> GetAllAccount();
     }
 }

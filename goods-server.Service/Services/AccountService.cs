@@ -2,6 +2,8 @@
 using goods_server.Contracts;
 using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel;
+using goods_server.Service.FilterModel.Helper;
 using goods_server.Service.InterfaceService;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace goods_server.Service.Services
 {
@@ -93,6 +96,67 @@ namespace goods_server.Service.Services
             return _mapper.Map<GetAccount2DTO>(account);
         }
 
+        public async Task<PagedResult<GetAccount2DTO>> GetAllAccountAsync<T>(AccountFilter accountFilter)
+        {
+            var accList = _mapper.Map<IEnumerable<GetAccount2DTO>>(await _unitOfWork.AccountRepo.GetAllAccount());
+            IQueryable<GetAccount2DTO> filterAcc = accList.AsQueryable();
+
+            // Filtering
+            if (!string.IsNullOrEmpty(accountFilter.Email))
+               filterAcc = filterAcc.Where(x => x.Email.Contains(accountFilter.Email, StringComparison.OrdinalIgnoreCase));
+            
+            if (!string.IsNullOrEmpty(accountFilter.UserName))
+                filterAcc = filterAcc.Where(x => x.UserName.Contains(accountFilter.UserName, StringComparison.OrdinalIgnoreCase));
+            
+            if(!string.IsNullOrEmpty(accountFilter.FullName))
+                filterAcc = filterAcc.Where(x => x.FullName.Contains(accountFilter.FullName, StringComparison.OrdinalIgnoreCase));
+
+            if(!string.IsNullOrEmpty(accountFilter.Status))
+                filterAcc = filterAcc.Where(x => x.Status.Contains(accountFilter.Status, StringComparison.OrdinalIgnoreCase));
+
+            if (!string.IsNullOrEmpty(accountFilter.RoleName))
+                filterAcc = filterAcc.Where(x => x.Role.Name.Contains(accountFilter.RoleName, StringComparison.OrdinalIgnoreCase));
+           
+            // Sorting
+            if (!string.IsNullOrEmpty(accountFilter.SortBy))
+            {
+                switch (accountFilter.SortBy)
+                {
+                    case "userName":
+                        filterAcc = accountFilter.SortAscending ?
+                            filterAcc.OrderBy(x => x.UserName) :
+                            filterAcc.OrderByDescending(x => x.UserName);
+                        break;
+                    case "joinDate":
+                        filterAcc = accountFilter.SortAscending ?
+                            filterAcc.OrderBy(x => x.JoinDate) :
+                            filterAcc.OrderByDescending(x => x.JoinDate);
+                        break;
+                    default:
+                        filterAcc = accountFilter.SortAscending ?
+                            filterAcc.OrderBy(item => GetProperty.GetPropertyValue(item, accountFilter.SortBy)) :
+                            filterAcc.OrderByDescending(item => GetProperty.GetPropertyValue(item, accountFilter.SortBy)) ;
+                        break;
+                            
+                }
+            }
+
+            // Paging
+            var pageItems = filterAcc
+                .Skip((accountFilter.PageNumber -1) * accountFilter.PageSize)
+                .Take(accountFilter.PageSize)
+                .ToList();
+
+            return new PagedResult<GetAccount2DTO>
+            {
+                Items = pageItems,
+                PageNumber = accountFilter.PageNumber,
+                PageSize = accountFilter.PageSize,
+                TotalItem = accList.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)accList.Count() / (decimal)accountFilter.PageSize)
+            };
+        }
+
         public async Task<IEnumerable<AccountDTO>> SearchAccountsAsync(string username)
         {
             var acclist = await _unitOfWork.AccountRepo.SearchAccountByUsername(username);
@@ -130,5 +194,6 @@ namespace goods_server.Service.Services
                 throw;
             }          
         }
+      
     }
 }
