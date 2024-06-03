@@ -50,6 +50,14 @@ namespace goods_server.Contracts
         public Guid ProductId { get; set; }
     }
 
+    public class GetProduct2DTO : ProductDTO
+    {
+        public Guid ProductId { get; set; }
+        public CategoryDTO? Category { get; set; }
+        public CityDTO? City { get; set; }
+        public GenreDTO? Genre { get; set; }
+    }
+
     public class CreateProductDTO
     {
         public string? Title { get; set; }

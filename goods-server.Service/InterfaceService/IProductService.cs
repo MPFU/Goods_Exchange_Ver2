@@ -1,4 +1,6 @@
 ﻿using goods_server.Contracts;
+using goods_server.Service.FilterModel;
+using goods_server.Service.FilterModel.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +17,6 @@ namespace goods_server.Service.InterfaceService
         public Task<bool> DeleteProduct(Guid id);
         public Task<bool> UpdateRatingCommentProduct(Guid id, UpdateRatingProductDTO productDTO);
         public Task<bool> UpdateStatusProduct(Guid id, UpdateStatusProductDTO productDTO);
+        public Task<PagedResult<GetProduct2DTO>> GetAllProductAsync<T>(ProductFilter productFilter);
     }
 }
