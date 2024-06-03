@@ -114,7 +114,7 @@ namespace goods_server.API.Controllers
             return Ok(comment);
         }
 
-        [HttpGet("product/{productId}")]
+        [HttpGet("{productId}")]
         public async Task<IActionResult> GetCommentsByProductId(Guid productId)
         {
             var comments = await _commentService.GetCommentsByProductIdAsync(productId);

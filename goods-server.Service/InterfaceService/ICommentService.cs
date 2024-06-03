@@ -10,11 +10,11 @@ namespace goods_server.Service.InterfaceService
     public interface ICommentService
     {
         Task<bool> CreateCommentAsync(CommentDTO comment);
-        Task<IEnumerable<CommentDTO>> GetCommentsByAccountIdAsync(Guid accountId);
-        Task<bool> UpdateCommentAsync(Guid commentId, CommentDTO comment);
+        Task<IEnumerable<GetCommentDTO>> GetCommentsByAccountIdAsync(Guid accountId);
+        Task<bool> UpdateCommentAsync(Guid commentId, UpdateCommentDTO comment);
         Task<bool> DeleteCommentAsync(Guid commentId);
-        Task<CommentDTO> GetCommentByIdAsync(Guid commentId);
-        Task<IEnumerable<CommentDTO>> GetCommentsByProductIdAsync(Guid productId);
+        Task<GetCommentDTO> GetCommentByIdAsync(Guid commentId);
+        Task<IEnumerable<GetCommentDTO>> GetCommentsByProductIdAsync(Guid productId);
 
 
     }

@@ -83,7 +83,7 @@ namespace goods_server.API.Controllers
 
 
         [HttpPut("{requestId}")]
-        public async Task<IActionResult> UpdateRequestHistory(Guid requestId, [FromBody] RequestHistoryDTO requestHistoryDto)
+        public async Task<IActionResult> UpdateRequestHistory(Guid requestId, [FromBody] UpdateRequestHistoryDTO requestHistoryDto)
         {
             try
             {

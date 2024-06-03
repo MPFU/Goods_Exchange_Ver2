@@ -14,9 +14,25 @@ namespace goods_server.Contracts
         public string? Status { get; set; }
     }
 
-    public class UpdateReportDTO : ReportDTO
+    public class GetReportDTO
     {
         public Guid ReportId { get; set; }
+
+        public Guid? AccountId { get; set; }
+
+        public Guid? ProductId { get; set; }
+
+        public DateTime? PostDate { get; set; }
+
+        public string? Descript { get; set; }
+
+        public string? Status { get; set; }
+    }
+
+    public class UpdateReportDTO 
+    {
+        public string? Descript { get; set; }
+
     }
 
 }

@@ -34,13 +34,13 @@ namespace goods_server.Service.Services
 
 
 
-        public async Task<IEnumerable<ReportDTO>> GetReportsByAccountIdAsync(Guid accountId)
+        public async Task<IEnumerable<GetReportDTO>> GetReportsByAccountIdAsync(Guid accountId)
         {
             var reports = await _unitOfWork.ReportRepo.GetReportsByAccountIdAsync(accountId);
-            return _mapper.Map<IEnumerable<ReportDTO>>(reports);
+            return _mapper.Map<IEnumerable<GetReportDTO>>(reports);
         }
 
-        public async Task<bool> UpdateReportAsync(Guid reportId, ReportDTO reportDto)
+        public async Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDTO reportDto)
         {
             var report = _mapper.Map<Report>(reportDto);
             return await _unitOfWork.ReportRepo.UpdateReportAsync(reportId, report);
@@ -51,16 +51,16 @@ namespace goods_server.Service.Services
             return await _unitOfWork.ReportRepo.DeleteReportAsync(reportId);
         }
 
-        public async Task<IEnumerable<ReportDTO>> GetAllReportsAsync()
+        public async Task<IEnumerable<GetReportDTO>> GetAllReportsAsync()
         {
             var reports = await _unitOfWork.ReportRepo.GetAllAsync();
-            return _mapper.Map<IEnumerable<ReportDTO>>(reports);
+            return _mapper.Map<IEnumerable<GetReportDTO>>(reports);
         }
 
-        public async Task<ReportDTO> GetReportByIdAsync(Guid reportId)
+        public async Task<GetReportDTO> GetReportByIdAsync(Guid reportId)
         {
             var report = await _unitOfWork.ReportRepo.GetReportByIdAsync(reportId);
-            return _mapper.Map<ReportDTO>(report);
+            return _mapper.Map<GetReportDTO>(report);
         }
 
     }

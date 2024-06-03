@@ -15,9 +15,31 @@ namespace goods_server.Contracts
         public string? Status { get; set; }
     }
 
-    public class UpdateRequestHistoryDTO : RequestHistoryDTO
+    public class GetRequestHistoryDTO
     {
         public Guid Id { get; set; }
+
+        public Guid? BuyerId { get; set; }
+
+        public Guid? SellerId { get; set; }
+
+        public Guid? ProductSellerId { get; set; }
+
+        public Guid? ProductBuyerId { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public string? Status { get; set; }
+
+
+    }
+
+    public class UpdateRequestHistoryDTO
+    {
+        public Guid? ProductSellerId { get; set; }
+
+        public Guid? ProductBuyerId { get; set; }
+
     }
 
 }

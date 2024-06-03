@@ -13,9 +13,25 @@ namespace goods_server.Contracts
         public string? Descript { get; set; }
     }
 
-    public class UpdateCommentDTO : CommentDTO
+    public class GetCommentDTO
     {
         public Guid CommentId { get; set; }
+
+        public Guid? CommenterId { get; set; }
+
+        public Guid? ProductId { get; set; }
+
+        public DateTime? PostDate { get; set; }
+
+        public string? Descript { get; set; }
+
+    }
+
+
+    public class UpdateCommentDTO
+    {
+      public string? Descript { get; set; }
+
     }
 
 }

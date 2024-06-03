@@ -10,12 +10,11 @@ namespace goods_server.Service.InterfaceService
     public interface IReportService
     {
         Task<bool> CreateReportAsync(ReportDTO report);
-        Task<IEnumerable<ReportDTO>> GetReportsByAccountIdAsync(Guid accountId);
-        Task<IEnumerable<ReportDTO>> GetAllReportsAsync();
-        Task<bool> UpdateReportAsync(Guid reportId, ReportDTO report);
+        Task<IEnumerable<GetReportDTO>> GetReportsByAccountIdAsync(Guid accountId);
+        Task<IEnumerable<GetReportDTO>> GetAllReportsAsync();
+        Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDTO report);
         Task<bool> DeleteReportAsync(Guid reportId);
-        Task<ReportDTO> GetReportByIdAsync(Guid reportId);
-
-    }
+        Task<GetReportDTO> GetReportByIdAsync(Guid reportId);
+           }
 
 }
