@@ -60,11 +60,19 @@ namespace goods_server.API.Controllers
         }
     
         [HttpPost]
-        [Authorize (Roles = "1")]
         public async Task<IActionResult> CreateAccount([FromBody] RegisterDTO registerRequest)
         {
             try
             {
+                var acc = await _accountService.GetAccountByEmailAsync(registerRequest.Email);
+                if (acc != null)
+                {
+                    return StatusCode(500, new FailedResponseModel
+                    {
+                        Status = 500,
+                        Message = "This Email has been used!..."
+                    });
+                }
                 var requestResult = await _accountService.CreateAccountAsync(registerRequest);
                 if (!requestResult)
                 {
@@ -120,7 +128,6 @@ namespace goods_server.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize (Roles = "1")]
         public async Task<IActionResult> DeleteAccount(Guid id)
         {
             try
