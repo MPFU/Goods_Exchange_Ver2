@@ -42,9 +42,19 @@ namespace goods_server.Service.Services
 
         public async Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDTO reportDto)
         {
-            var report = _mapper.Map<Report>(reportDto);
-            return await _unitOfWork.ReportRepo.UpdateReportAsync(reportId, report);
+            var existingReport = await _unitOfWork.ReportRepo.GetReportByIdAsync(reportId);
+            if (existingReport == null)
+            {
+                return false;
+            }
+
+            existingReport.Descript = reportDto.Descript;
+            existingReport.Status = reportDto.Status; // Cập nhật Status
+            _unitOfWork.ReportRepo.Update(existingReport);
+            var result = await _unitOfWork.SaveAsync() > 0;
+            return result;
         }
+
 
         public async Task<bool> DeleteReportAsync(Guid reportId)
         {

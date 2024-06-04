@@ -32,6 +32,7 @@ namespace goods_server.Contracts
     public class UpdateReportDTO 
     {
         public string? Descript { get; set; }
+        public string? Status { get; set; }
 
     }
 

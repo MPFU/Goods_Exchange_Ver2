@@ -24,7 +24,8 @@ namespace goods_server.Contracts
     public class UpdateOrderDTO
     {
         public decimal? TotalPrice { get; set; }
-      
+        public string? Status { get; set; }
+
     }
 
 }

@@ -50,6 +50,7 @@ namespace goods_server.Service.Services
             }
 
             existingOrder.TotalPrice = orderDto.TotalPrice; // Cập nhật TotalPrice
+            existingOrder.Status = orderDto.Status;
             _unitOfWork.OrderRepo.Update(existingOrder);
             var result = await _unitOfWork.SaveAsync() > 0;
             return result;

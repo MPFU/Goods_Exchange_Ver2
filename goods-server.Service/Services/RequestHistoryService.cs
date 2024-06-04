@@ -49,6 +49,7 @@ namespace goods_server.Service.Services
 
             existingRequestHistory.ProductSellerId = requestHistoryDto.ProductSellerId; // Cập nhật ProductSellerId
             existingRequestHistory.ProductBuyerId = requestHistoryDto.ProductBuyerId; // Cập nhật ProductBuyerId
+            existingRequestHistory.Status = requestHistoryDto.Status;
             _unitOfWork.RequestHistoryRepo.Update(existingRequestHistory);
             var result = await _unitOfWork.SaveAsync() > 0;
             return result;
