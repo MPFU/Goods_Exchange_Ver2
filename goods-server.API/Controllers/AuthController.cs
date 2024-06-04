@@ -46,6 +46,15 @@ namespace goods_server.API.Controllers
         {
             try
             {
+                var acc = await _accountService.GetAccountByEmailAsync(registerRequest.Email);
+                if (acc != null)
+                {
+                    return StatusCode(500, new FailedResponseModel
+                    {
+                        Status = 500,
+                        Message = "This Email has been used!..."
+                    });
+                }
                 var requestResult = await _authService.RegisterAsync(registerRequest);
                 if (!requestResult)
                 {

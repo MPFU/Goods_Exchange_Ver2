@@ -15,10 +15,12 @@ namespace goods_server.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly IAzureBlobStorage _azureBlobStorage;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IAzureBlobStorage azureBlobStorage)
         {
             _accountService = accountService;
+            _azureBlobStorage = azureBlobStorage;
         }
 
         [HttpGet("{id}")]
@@ -58,11 +60,19 @@ namespace goods_server.API.Controllers
         }
     
         [HttpPost]
-        [Authorize (Roles = "1")]
         public async Task<IActionResult> CreateAccount([FromBody] RegisterDTO registerRequest)
         {
             try
             {
+                var acc = await _accountService.GetAccountByEmailAsync(registerRequest.Email);
+                if (acc != null)
+                {
+                    return StatusCode(500, new FailedResponseModel
+                    {
+                        Status = 500,
+                        Message = "This Email has been used!..."
+                    });
+                }
                 var requestResult = await _accountService.CreateAccountAsync(registerRequest);
                 if (!requestResult)
                 {
@@ -118,7 +128,6 @@ namespace goods_server.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize (Roles = "1")]
         public async Task<IActionResult> DeleteAccount(Guid id)
         {
             try
@@ -138,6 +147,49 @@ namespace goods_server.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadFileAvatar(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest(new FailedResponseModel()
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "File is not selected or empty."
+                    });
+                var imageExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                if(imageExtensions.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)) == false)
+                {
+                    return BadRequest(new FailedResponseModel()
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "File is not image."
+                    });
+                }
+                var containerName = "avatar"; // replace with your container name
+                var uri = await _azureBlobStorage.UploadFileAsync(containerName, file);
+
+                return Ok(new SucceededResponseModel()
+                {
+                    Status = Ok().StatusCode,
+                    Message = "File uploaded successfully",
+                    Data = new
+                    {
+                        FileUri = uri
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new FailedResponseModel
+                {
+                    Status = 500,
+                    Message = $"An error occurred while uploading the file: {ex.Message}"
+                });
             }
         }
     }
