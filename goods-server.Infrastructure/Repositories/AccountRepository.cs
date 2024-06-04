@@ -16,6 +16,11 @@ namespace goods_server.Infrastructure.Repositories
 
         }
 
+        public async Task<IEnumerable<Account>> GetAllAccount()
+        {
+            return await _dbContext.Accounts.Include(x => x.Role).ToListAsync();
+        }
+
         public async Task<Account?> GetByEmailAsync(string email)
         {
             return await _dbContext.Accounts.Where(x => x.Email == email).FirstOrDefaultAsync();

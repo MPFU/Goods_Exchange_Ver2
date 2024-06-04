@@ -38,13 +38,41 @@ namespace goods_server.Infrastructure.AutoMaper
             CreateMap<Report, ReportDTO>().ReverseMap();
             CreateMap<Report, UpdateReportDTO>().ReverseMap();
             CreateMap<Report, GetReportDTO>().ReverseMap();
-            // PRODUCT
+
+            // PRODUCT          
             CreateMap<CreateProductDTO, Product>();
             CreateMap<Product,GetProductDTO>().ReverseMap();
+            CreateMap<Product, GetProduct2DTO>().ReverseMap();
 
             // ROLE
             CreateMap<Role, RoleDTO>().ReverseMap();
             CreateMap<Role, GetRoleDTO>().ReverseMap();
+
+            // Category Mapping
+            CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<CreateCategoryDTO, Category>();
+            CreateMap<UpdateCategoryDTO, Category>();
+
+            // City Mapping
+            CreateMap<City, CityDTO>().ReverseMap();
+            CreateMap<CreateCityDTO, City>();
+            CreateMap<UpdateCityDTO, City>();
+
+            // Genre Mapping
+            CreateMap<Genre, GenreDTO>().ReverseMap();
+            CreateMap<CreateGenreDTO, Genre>();
+            CreateMap<UpdateGenreDTO, Genre>();
+
+            /// OrderDetail Mapping
+            CreateMap<OrderDetail, OrderDetailDTO>().ReverseMap();
+            CreateMap<CreateOrderDetailDTO, OrderDetail>();
+            CreateMap<UpdateOrderDetailDTO, OrderDetail>();
+
+            // Rating Mapping
+            CreateMap<Rating, RatingDTO>().ReverseMap();
+            CreateMap<CreateRatingDTO, Rating>();
+            CreateMap<UpdateRatingDTO, Rating>();
+
         }
     }
 }

@@ -2,6 +2,8 @@
 using goods_server.Contracts;
 using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel;
+using goods_server.Service.FilterModel.Helper;
 using goods_server.Service.InterfaceService;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -57,6 +59,85 @@ namespace goods_server.Service.Services
             {
                 throw;
             }
+        }
+
+        public async Task<PagedResult<GetProduct2DTO>> GetAllProductAsync<T>(ProductFilter productFilter)
+        {
+            var proList = _mapper.Map<IEnumerable<GetProduct2DTO>>(await _unitOfWork.ProductRepo.GetAllProductAsync());
+            IQueryable<GetProduct2DTO> filterPo = proList.AsQueryable();
+
+            //Filtering
+
+            if (!string.IsNullOrEmpty(productFilter.Title))
+                filterPo = filterPo.Where(x => x.Title.Contains(productFilter.Title, StringComparison.OrdinalIgnoreCase));
+
+            if (productFilter.CreatorId != null)
+                filterPo = filterPo.Where(x => x.CreatorId.Equals(productFilter.CreatorId));
+
+            if (productFilter.Price != null)
+                filterPo = filterPo.Where(x => x.Price ==  productFilter.Price);
+
+            if (productFilter.Rated != null)
+                filterPo = filterPo.Where(x => x.Rated == productFilter.Rated);
+
+            if (!string.IsNullOrEmpty(productFilter.Status))
+                filterPo = filterPo.Where(x => x.Status.Contains(productFilter.Status, StringComparison.OrdinalIgnoreCase));
+
+            if (!string.IsNullOrEmpty(productFilter.GenreName))
+                filterPo = filterPo.Where(x => x.Genre.Name.Contains(productFilter.GenreName));
+
+            if (!string.IsNullOrEmpty(productFilter.CityName))
+                filterPo = filterPo.Where(x => x.City.Name.Contains(productFilter.CityName));
+
+            if (!string.IsNullOrEmpty(productFilter.CategoryName))
+                filterPo = filterPo.Where(x => x.Category.Name.Contains(productFilter.CategoryName));
+
+            // Sorting
+            if (!string.IsNullOrEmpty(productFilter.SortBy))
+            {
+                switch (productFilter.SortBy)
+                {
+                    case "price":
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(x => x.Price) :
+                            filterPo.OrderByDescending(x => x.Price);
+                        break;
+
+                    case "createdDate":
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(x => x.CreatedDate) :
+                            filterPo.OrderByDescending(x => x.CreatedDate);
+                        break;
+
+                    case "rated":
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(x => x.Rated) :
+                            filterPo.OrderByDescending(x => x.Rated);
+                        break;
+
+                    default:
+                        filterPo = productFilter.SortAscending ?
+                            filterPo.OrderBy(item => GetProperty.GetPropertyValue(item, productFilter.SortBy)) :
+                            filterPo.OrderByDescending(item => GetProperty.GetPropertyValue(item, productFilter.SortBy));
+                        break;
+
+                }
+            }
+
+            // Paging
+            var pageItems = filterPo
+                .Skip((productFilter.PageNumber - 1) * productFilter.PageSize)
+                .Take(productFilter.PageSize)
+                .ToList();
+
+            return new PagedResult<GetProduct2DTO>
+            {
+                Items = pageItems,
+                PageNumber = productFilter.PageNumber,
+                PageSize = productFilter.PageSize,
+                TotalItem = proList.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)proList.Count() / (decimal)productFilter.PageSize)
+            };
         }
 
         public async Task<GetProductDTO> GetProduct(Guid id)

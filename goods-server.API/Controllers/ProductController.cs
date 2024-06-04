@@ -1,4 +1,6 @@
 ﻿using goods_server.Contracts;
+using goods_server.Core.Models;
+using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +29,19 @@ namespace goods_server.API.Controllers
                     return NotFound();
                 }
                 return Ok(check);
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet] 
+        public async Task<IActionResult> GetAllProduct([FromQuery]ProductFilter productFilter)
+        {
+            try
+            {
+                var pro = await _productService.GetAllProductAsync<Product>(productFilter);
+                return Ok(pro);
             }catch (Exception ex)
             {
                 return BadRequest(ex.Message);

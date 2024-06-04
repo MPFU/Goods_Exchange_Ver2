@@ -12,21 +12,22 @@ namespace goods_server.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class RoleController : ControllerBase
     {
-        private readonly IAccountService _accountService;
+        private readonly IRoleService _roleService;
 
-        public AccountController(IAccountService accountService)
+        public RoleController(IRoleService roleService)
         {
-            _accountService = accountService;
+            _roleService = roleService;
         }
 
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAccountById(Guid id)
+        public async Task<IActionResult> GetRoleById(int id)
         {
             try
             {
-                var account = await _accountService.GetAccountByIdAsync(id);
+                var account = await _roleService.GetRoleById(id);
                 if (account == null)
                 {
                     return NotFound();
@@ -40,11 +41,11 @@ namespace goods_server.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAccountAsync([FromQuery] AccountFilter accountFilter)
+        public async Task<IActionResult> GetAllRoleAsync()
         {
             try
             {
-                var acc = await _accountService.GetAllAccountAsync<Account>(accountFilter);
+                var acc = await _roleService.GetRoles();
                 if (acc == null)
                 {
                     return NotFound();
@@ -56,31 +57,23 @@ namespace goods_server.API.Controllers
                 return BadRequest(e.Message);
             }
         }
-    
+
         [HttpPost]
-        [Authorize (Roles = "1")]
-        public async Task<IActionResult> CreateAccount([FromBody] RegisterDTO registerRequest)
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> CreateAccount([FromBody] RoleDTO roleDTO)
         {
             try
             {
-                var requestResult = await _accountService.CreateAccountAsync(registerRequest);
+                var requestResult = await _roleService.CreateNewRole(roleDTO);
                 if (!requestResult)
                 {
                     return StatusCode(500, new FailedResponseModel
                     {
                         Status = 500,
-                        Message = "Create account failed."
+                        Message = "Create Role failed."
                     });
                 }
-                return Ok(new SucceededResponseModel()
-                {
-                    Status = Ok().StatusCode,
-                    Message = "Success",
-                    Data = new
-                    {
-                        Account = await _accountService.GetAccountByEmailAsync(registerRequest.Email)
-                    }
-                });
+                return Ok();
 
             }
             catch (Exception ex)
@@ -94,16 +87,16 @@ namespace goods_server.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProfile(Guid id, UpdateProfileDTO profileDTO)
+        public async Task<IActionResult> UpdateRole(int id, RoleDTO roleDTO)
         {
             try
             {
-                var check = await _accountService.GetAccountByIdAsync(id);
+                var check = await _roleService.GetRoleById(id);
                 if (check == null)
                 {
                     return NotFound();
                 }
-                var up = await _accountService.UpdateAccountAsync(id, profileDTO);
+                var up = await _roleService.UpdateRole(id, roleDTO);
                 if (up)
                 {
                     return Ok("Update SUCCESS!");
@@ -118,17 +111,17 @@ namespace goods_server.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize (Roles = "1")]
-        public async Task<IActionResult> DeleteAccount(Guid id)
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> DeleteRole(int id)
         {
             try
             {
-                var check = await _accountService.GetAccountByIdAsync(id);
+                var check = await _roleService.GetRoleById(id);
                 if (check == null)
                 {
                     return NotFound();
                 }
-                var del = await _accountService.DeleteAccountAsync(id);
+                var del = await _roleService.DeleteRole(id);
                 if (del)
                 {
                     return Ok("Delete SUCCESS!");

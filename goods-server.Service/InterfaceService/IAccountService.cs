@@ -1,5 +1,7 @@
 ﻿using goods_server.Contracts;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel;
+using goods_server.Service.FilterModel.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +27,7 @@ namespace goods_server.Service.InterfaceService
         Task<GetAccountDTO?> GetAccountByIdAsync(Guid accountId);
 
         Task<bool> DeleteAccountAsync(Guid accountId);
+
+        Task<PagedResult<GetAccount2DTO>> GetAllAccountAsync<T>(AccountFilter accountFilter);
     }
 }
