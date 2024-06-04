@@ -13,6 +13,9 @@ namespace goods_server.Core.InterfacesRepo
         Task<IEnumerable<Comment>> GetCommentsByAccountIdAsync(Guid accountId);
         Task<bool> UpdateCommentAsync(Guid commentId, Comment comment);
         Task<bool> DeleteCommentAsync(Guid commentId);
+        Task<Comment> GetCommentByIdAsync(Guid commentId);
+        Task<IEnumerable<Comment>> GetCommentsByProductIdAsync(Guid productId);
+
     }
 
 }

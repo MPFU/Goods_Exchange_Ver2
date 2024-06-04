@@ -12,10 +12,20 @@ namespace goods_server.Contracts
         public decimal? TotalPrice { get; set; }
         public string? Status { get; set; }
     }
-
-    public class UpdateOrderDTO : OrderDTO
+    public class GetOrderDTO
     {
         public Guid OrderId { get; set; }
+        public Guid? CustomerId { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public decimal? TotalPrice { get; set; }
+        public string? Status { get; set; }
+    }
+
+    public class UpdateOrderDTO
+    {
+        public decimal? TotalPrice { get; set; }
+        public string? Status { get; set; }
+
     }
 
 }

@@ -10,10 +10,12 @@ namespace goods_server.Service.InterfaceService
     public interface IRequestHistoyService
     {
         Task<bool> CreateRequestHistoryAsync(RequestHistoryDTO requestHistory);
-        Task<IEnumerable<RequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(Guid accountId);
-        Task<IEnumerable<RequestHistoryDTO>> GetAllRequestHistoriesAsync();
-        Task<bool> UpdateRequestHistoryAsync(Guid requestId, RequestHistoryDTO requestHistory);
+        Task<IEnumerable<GetRequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(Guid accountId);
+        Task<IEnumerable<GetRequestHistoryDTO>> GetAllRequestHistoriesAsync();
+        Task<bool> UpdateRequestHistoryAsync(Guid requestId, UpdateRequestHistoryDTO requestHistory);
         Task<bool> DeleteRequestHistoryAsync(Guid requestId);
+        Task<GetRequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId);
+
 
     }
 }

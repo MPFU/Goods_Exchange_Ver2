@@ -70,8 +70,20 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [HttpGet("{requestHistoryId}")]
+        public async Task<IActionResult> GetRequestHistoryById(Guid requestHistoryId)
+        {
+            var requestHistory = await _requestHistoryService.GetRequestHistoryByIdAsync(requestHistoryId);
+            if (requestHistory == null)
+            {
+                return NotFound();
+            }
+            return Ok(requestHistory);
+        }
+
+
         [HttpPut("{requestId}")]
-        public async Task<IActionResult> UpdateRequestHistory(Guid requestId, [FromBody] RequestHistoryDTO requestHistoryDto)
+        public async Task<IActionResult> UpdateRequestHistory(Guid requestId, [FromBody] UpdateRequestHistoryDTO requestHistoryDto)
         {
             try
             {

@@ -22,21 +22,13 @@ namespace goods_server.API.Controllers
             try
             {
                 var result = await _orderService.CreateOrderAsync(orderDto);
-                if (!result)
-                {
-                    return StatusCode(500, new FailedResponseModel
-                    {
-                        Status = 500,
-                        Message = "Create order failed."
-                    });
-                }
                 return Ok(new SucceededResponseModel()
                 {
                     Status = Ok().StatusCode,
                     Message = "Success",
                     Data = new
                     {
-                        Order = orderDto
+                        Order = result
                     }
                 });
             }
@@ -49,6 +41,8 @@ namespace goods_server.API.Controllers
                 });
             }
         }
+
+
 
         [HttpGet("{customerId}")]
         public async Task<IActionResult> GetOrdersByCustomerId(Guid customerId)
@@ -110,6 +104,18 @@ namespace goods_server.API.Controllers
             var orders = await _orderService.GetAllOrdersAsync();
             return Ok(orders);
         }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderById(Guid orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return Ok(order);
+        }
+
     }
 
 }

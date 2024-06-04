@@ -24,22 +24,22 @@ namespace goods_server.API.Controllers
             try
             {
                 var result = await _reportService.CreateReportAsync(reportDto);
-                if (!result)
+                if (result)
                 {
-                    return StatusCode(500, new FailedResponseModel
+                    return Ok(new SucceededResponseModel()
                     {
-                        Status = 500,
-                        Message = "Create report failed."
+                        Status = Ok().StatusCode,
+                        Message = "Success",
+                        Data = new
+                        {
+                            Report = reportDto
+                        }
                     });
                 }
-                return Ok(new SucceededResponseModel()
+                return StatusCode(500, new FailedResponseModel
                 {
-                    Status = Ok().StatusCode,
-                    Message = "Success",
-                    Data = new
-                    {
-                        Report = reportDto
-                    }
+                    Status = 500,
+                    Message = "Create report failed."
                 });
             }
             catch (Exception ex)
@@ -69,6 +69,18 @@ namespace goods_server.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("{reportId}")]
+        public async Task<IActionResult> GetReportById(Guid reportId)
+        {
+            var report = await _reportService.GetReportByIdAsync(reportId);
+            if (report == null)
+            {
+                return NotFound();
+            }
+            return Ok(report);
+        }
+
 
         [HttpPut("{reportId}")]
         public async Task<IActionResult> UpdateReport(Guid reportId, [FromBody] UpdateReportDTO reportDto)

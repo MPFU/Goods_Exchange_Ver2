@@ -48,6 +48,12 @@ namespace goods_server.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Report> GetReportByIdAsync(Guid reportId)
+        {
+            return await _dbContext.Reports.FindAsync(reportId);
+        }
+
     }
 
 }

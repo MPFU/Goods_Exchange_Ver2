@@ -13,6 +13,8 @@ namespace goods_server.Core.InterfacesRepo
         Task<IEnumerable<Report>> GetReportsByAccountIdAsync(Guid accountId);
         Task<bool> UpdateReportAsync(Guid reportId, Report report);
         Task<bool> DeleteReportAsync(Guid reportId);
+        Task<Report> GetReportByIdAsync(Guid reportId);
+
     }
 
 }
