@@ -1,8 +1,10 @@
-﻿using goods_server.Core.InterfacesRepo;
+﻿using Azure.Storage.Blobs;
+using goods_server.Core.InterfacesRepo;
 using goods_server.Infrastructure.AutoMaper;
 using goods_server.Infrastructure.Repositories;
 using goods_server.Service.InterfaceService;
 using goods_server.Service.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ namespace goods_server.Service.ServiceExtensions
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddDIServices(this IServiceCollection services)
+        public static IServiceCollection AddDIServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -32,7 +34,9 @@ namespace goods_server.Service.ServiceExtensions
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IReplyCommentService, ReplyCommentService>();
             services.AddScoped<IRequestHistoyService, RequestHistoryService>();
+            services.AddScoped<IAzureBlobStorage,AzureBlobService>();
 
+            services.AddScoped(x => new BlobServiceClient(configuration.GetConnectionString("AzureBlobStorage")));
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
             return services;
         }
