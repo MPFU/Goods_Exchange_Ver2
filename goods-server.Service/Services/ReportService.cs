@@ -25,34 +25,54 @@ namespace goods_server.Service.Services
         public async Task<bool> CreateReportAsync(ReportDTO reportDto)
         {
             var report = _mapper.Map<Report>(reportDto);
+            report.ReportId = Guid.NewGuid(); // Tạo một Guid mới
             report.PostDate = DateTime.UtcNow;
             await _unitOfWork.ReportRepo.AddAsync(report);
             var result = await _unitOfWork.SaveAsync() > 0;
             return result;
         }
 
-        public async Task<IEnumerable<ReportDTO>> GetReportsByAccountIdAsync(Guid accountId)
+
+
+        public async Task<IEnumerable<GetReportDTO>> GetReportsByAccountIdAsync(Guid accountId)
         {
             var reports = await _unitOfWork.ReportRepo.GetReportsByAccountIdAsync(accountId);
-            return _mapper.Map<IEnumerable<ReportDTO>>(reports);
+            return _mapper.Map<IEnumerable<GetReportDTO>>(reports);
         }
 
-        public async Task<bool> UpdateReportAsync(Guid reportId, ReportDTO reportDto)
+        public async Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDTO reportDto)
         {
-            var report = _mapper.Map<Report>(reportDto);
-            return await _unitOfWork.ReportRepo.UpdateReportAsync(reportId, report);
+            var existingReport = await _unitOfWork.ReportRepo.GetReportByIdAsync(reportId);
+            if (existingReport == null)
+            {
+                return false;
+            }
+
+            existingReport.Descript = reportDto.Descript;
+            existingReport.Status = reportDto.Status; // Cập nhật Status
+            _unitOfWork.ReportRepo.Update(existingReport);
+            var result = await _unitOfWork.SaveAsync() > 0;
+            return result;
         }
+
 
         public async Task<bool> DeleteReportAsync(Guid reportId)
         {
             return await _unitOfWork.ReportRepo.DeleteReportAsync(reportId);
         }
 
-        public async Task<IEnumerable<ReportDTO>> GetAllReportsAsync()
+        public async Task<IEnumerable<GetReportDTO>> GetAllReportsAsync()
         {
             var reports = await _unitOfWork.ReportRepo.GetAllAsync();
-            return _mapper.Map<IEnumerable<ReportDTO>>(reports);
+            return _mapper.Map<IEnumerable<GetReportDTO>>(reports);
         }
+
+        public async Task<GetReportDTO> GetReportByIdAsync(Guid reportId)
+        {
+            var report = await _unitOfWork.ReportRepo.GetReportByIdAsync(reportId);
+            return _mapper.Map<GetReportDTO>(report);
+        }
+
     }
 
 

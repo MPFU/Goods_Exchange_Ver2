@@ -26,4 +26,5 @@ public partial class RequestHistory
     public virtual Product? ProductSeller { get; set; }
 
     public virtual Account? Seller { get; set; }
+    
 }

@@ -47,6 +47,12 @@ namespace goods_server.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<RequestHistory> GetRequestHistoryByIdAsync(Guid requestHistoryId)
+        {
+            return await _dbContext.RequestHistories.FindAsync(requestHistoryId);
+        }
+
     }
 
 }

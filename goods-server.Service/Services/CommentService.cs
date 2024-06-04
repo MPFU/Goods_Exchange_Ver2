@@ -33,13 +33,13 @@ namespace goods_server.Service.Services
         }
 
 
-        public async Task<IEnumerable<CommentDTO>> GetCommentsByAccountIdAsync(Guid accountId)
+        public async Task<IEnumerable<GetCommentDTO>> GetCommentsByAccountIdAsync(Guid accountId)
         {
             var comments = await _unitOfWork.CommentRepo.GetCommentsByAccountIdAsync(accountId);
-            return _mapper.Map<IEnumerable<CommentDTO>>(comments);
+            return _mapper.Map<IEnumerable<GetCommentDTO>>(comments);
         }
 
-        public async Task<bool> UpdateCommentAsync(Guid commentId, CommentDTO commentDto)
+        public async Task<bool> UpdateCommentAsync(Guid commentId, UpdateCommentDTO commentDto)
         {
             var comment = _mapper.Map<Comment>(commentDto);
             return await _unitOfWork.CommentRepo.UpdateCommentAsync(commentId, comment);
@@ -48,6 +48,18 @@ namespace goods_server.Service.Services
         public async Task<bool> DeleteCommentAsync(Guid commentId)
         {
             return await _unitOfWork.CommentRepo.DeleteCommentAsync(commentId);
+        }
+
+        public async Task<GetCommentDTO> GetCommentByIdAsync(Guid commentId)
+        {
+            var comment = await _unitOfWork.CommentRepo.GetCommentByIdAsync(commentId);
+            return _mapper.Map<GetCommentDTO>(comment);
+        }
+
+        public async Task<IEnumerable<GetCommentDTO>> GetCommentsByProductIdAsync(Guid productId)
+        {
+            var comments = await _unitOfWork.CommentRepo.GetCommentsByProductIdAsync(productId);
+            return _mapper.Map<IEnumerable<GetCommentDTO>>(comments);
         }
 
 
