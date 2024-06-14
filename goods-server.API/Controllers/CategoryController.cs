@@ -38,23 +38,37 @@ namespace goods_server.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDTO createCategoryDTO)
         {
-            var result = await _categoryService.CreateCategoryAsync(createCategoryDTO);
-            if (result)
+            try
             {
-                return Ok("Category created successfully.");
+                var result = await _categoryService.CreateCategoryAsync(createCategoryDTO);
+                if (result)
+                {
+                    return Ok("Category created successfully.");
+                }
+                return BadRequest("Failed to create category.");
             }
-            return BadRequest("Failed to create category.");
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryDTO updateCategoryDTO)
         {
-            var result = await _categoryService.UpdateCategoryAsync(id, updateCategoryDTO);
-            if (result)
+            try
             {
-                return Ok("Category updated successfully.");
+                var result = await _categoryService.UpdateCategoryAsync(id, updateCategoryDTO);
+                if (result)
+                {
+                    return Ok("Category updated successfully.");
+                }
+                return BadRequest("Failed to update category.");
             }
-            return BadRequest("Failed to update category.");
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
