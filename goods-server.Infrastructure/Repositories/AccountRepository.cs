@@ -23,7 +23,9 @@ namespace goods_server.Infrastructure.Repositories
 
         public async Task<Account?> GetByEmailAsync(string email)
         {
-            return await _dbContext.Accounts.Where(x => x.Email == email).FirstOrDefaultAsync();
+            return await _dbContext.Accounts
+                .Include(x => x.Role)
+                .Where(x => x.Email == email).FirstOrDefaultAsync();
         }
 
         public async Task<Account?> GetByUsernameAsync(string username)

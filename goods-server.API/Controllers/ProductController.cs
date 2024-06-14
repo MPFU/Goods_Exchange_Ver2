@@ -1,4 +1,5 @@
-﻿using goods_server.Contracts;
+﻿using artshare_server.WebAPI.ResponseModels;
+using goods_server.Contracts;
 using goods_server.Core.Models;
 using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
@@ -12,10 +13,13 @@ namespace goods_server.API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IAzureBlobStorage _azureBlobStorage;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IAzureBlobStorage azureBlobStorage)
         {
             _productService = productService;
+            _azureBlobStorage = azureBlobStorage;
+
         }
 
         [HttpGet]
@@ -62,6 +66,49 @@ namespace goods_server.API.Controllers
             }catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadFileProductImage(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest(new FailedResponseModel()
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "File is not selected or empty."
+                    });
+                var imageExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                if (imageExtensions.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)) == false)
+                {
+                    return BadRequest(new FailedResponseModel()
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "File is not image."
+                    });
+                }
+                var containerName = "product"; // replace with your container name
+                var uri = await _azureBlobStorage.UploadFileAsync(containerName, file);
+
+                return Ok(new SucceededResponseModel()
+                {
+                    Status = Ok().StatusCode,
+                    Message = "File uploaded successfully",
+                    Data = new
+                    {
+                        FileUri = uri
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new FailedResponseModel
+                {
+                    Status = 500,
+                    Message = $"An error occurred while uploading the file: {ex.Message}"
+                });
             }
         }
 

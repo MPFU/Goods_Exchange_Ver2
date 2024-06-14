@@ -25,11 +25,29 @@ namespace goods_server.API.Controllers
             try
             {
                 var loginRequest = await _authService.LoginAsync(loginData);
-                if (loginRequest == null)
+                var acc = await _accountService.GetAccountByEmailAndPasswordAsync(loginData.Email, loginData.Password);
+                if (loginRequest == null || acc == null)
                 {
-                    return NotFound();
+                    return Ok(new FailedResponseModel()
+                    {
+                        Status = NotFound().StatusCode,
+                        Message = "Wrong email or password!"
+                    });
                 }
-                return Ok(loginRequest);
+                return Ok(new SucceededResponseModel
+                {
+                    Status = 200,
+                    Message = "Login Success",
+                    Data = new
+                    {
+                       AccountId = acc.AccountId,
+                       Username = acc.UserName,
+                       Email = acc.Email,
+                       AvatarImg = acc.AvatarUrl,
+                       Role = acc.Role,
+                       Token = loginRequest
+                    }
+                });
             }
             catch (NullReferenceException ex)
             {

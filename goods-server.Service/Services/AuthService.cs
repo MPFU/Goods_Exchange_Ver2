@@ -51,7 +51,7 @@ namespace goods_server.Service.Services
             }
         }
 
-        private string CreateToken(GetAccountDTO account)
+        private string CreateToken(GetAccount2DTO account)
         {
             var nowUtc = DateTime.UtcNow;
             var expirationDuration = TimeSpan.FromMinutes(60);
