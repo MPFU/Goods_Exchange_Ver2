@@ -33,6 +33,9 @@ namespace goods_server.Service.Services
                 var product = _mapper.Map<Product>(createProductDTO);
                 product.CreatedDate = DateTime.UtcNow;
                 product.ProductId = Guid.NewGuid();
+                product.Rated = 5;
+                product.RatedCount = 0;
+                product.CommentCount = 0;
                 await _unitOfWork.ProductRepo.AddAsync(product);
                 var result = await _unitOfWork.SaveAsync() > 0;
                 return result;
@@ -84,16 +87,18 @@ namespace goods_server.Service.Services
                 filterPo = filterPo.Where(x => x.Status.Contains(productFilter.Status, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrEmpty(productFilter.GenreName))
-                filterPo = filterPo.Where(x => x.Genre.Name.Contains(productFilter.GenreName));
+                filterPo = filterPo.Where(x => x.Genre.Name.Contains(productFilter.GenreName, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrEmpty(productFilter.CityName))
-                filterPo = filterPo.Where(x => x.City.Name.Contains(productFilter.CityName));
+                filterPo = filterPo.Where(x => x.City.Name.Contains(productFilter.CityName, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrEmpty(productFilter.CategoryName))
-                filterPo = filterPo.Where(x => x.Category.Name.Contains(productFilter.CategoryName));
+                filterPo = filterPo.Where(x => x.Category.Name.Contains(productFilter.CategoryName, StringComparison.OrdinalIgnoreCase));
 
-            // Sorting
-            if (!string.IsNullOrEmpty(productFilter.SortBy))
+            if (!string.IsNullOrEmpty(productFilter.IsDisplay))
+                filterPo = filterPo.Where(x => x.IsDisplay.Contains(productFilter.IsDisplay, StringComparison.OrdinalIgnoreCase));
+                // Sorting
+                if (!string.IsNullOrEmpty(productFilter.SortBy))
             {
                 switch (productFilter.SortBy)
                 {
@@ -135,8 +140,8 @@ namespace goods_server.Service.Services
                 Items = pageItems,
                 PageNumber = productFilter.PageNumber,
                 PageSize = productFilter.PageSize,
-                TotalItem = proList.Count(),
-                TotalPages = (int)Math.Ceiling((decimal)proList.Count() / (decimal)productFilter.PageSize)
+                TotalItem = filterPo.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)filterPo.Count() / (decimal)productFilter.PageSize)
             };
         }
 
@@ -144,6 +149,31 @@ namespace goods_server.Service.Services
         {
             var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
             return _mapper.Map<GetProductDTO>(product);
+        }
+
+        public async Task<GetProduct2DTO> GetProductById(Guid id)
+        {
+            return _mapper.Map<GetProduct2DTO>(await _unitOfWork.ProductRepo.GetProductById(id));
+        }
+
+        public async Task<bool> UpdateCommentProduct(Guid? id, bool comment)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                if (product != null)
+                {
+                    product.CommentCount = comment == true ? product.CommentCount + 1 : (product.CommentCount != 0 ? product.CommentCount - 1 : 0);
+                    _unitOfWork.ProductRepo.Update(product);
+                    var result = await _unitOfWork.SaveAsync() > 0;
+                    return result;
+                }
+                return false;
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
         }
 
         public async Task<bool> UpdateProduct(Guid id ,UpdateProductDTO updateProductDTO)
@@ -186,6 +216,27 @@ namespace goods_server.Service.Services
                     product.Rated = (productDTO.Rated != null) ? productDTO.Rated : product.Rated;
                     product.RatedCount = (productDTO.RatedCount != null) ? productDTO.RatedCount : product.RatedCount;
                     product.CommentCount = (productDTO.CommentCount != null) ? productDTO.CommentCount : product.CommentCount;
+                    _unitOfWork.ProductRepo.Update(product);
+                    var result = await _unitOfWork.SaveAsync() > 0;
+                    return result;
+                }
+                return false;
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateRatingProduct(Guid? id, int? rate)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                if (product != null)
+                {
+                    product.Rated = (rate != null || rate > 0) ? (product.Rated + rate) / 2 : product.Rated;
+                    product.RatedCount = product.RatedCount + 1;                   
                     _unitOfWork.ProductRepo.Update(product);
                     var result = await _unitOfWork.SaveAsync() > 0;
                     return result;

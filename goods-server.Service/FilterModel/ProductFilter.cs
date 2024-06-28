@@ -18,5 +18,6 @@ namespace goods_server.Service.FilterModel
         public string? CityName { get; set; }
         public string? GenreName { get; set; }
         public string? Status { get; set; }
+        public string? IsDisplay {  get; set; }
     }
 }

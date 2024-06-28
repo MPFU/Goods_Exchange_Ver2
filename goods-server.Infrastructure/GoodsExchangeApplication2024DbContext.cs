@@ -56,16 +56,16 @@ public partial class GoodsExchangeApplication2024DbContext : DbContext
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true)
             .Build();
-        
+
         connectionString = config.GetConnectionString("TruongDatabase");
-        return connectionString;
+              return connectionString;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.Property(e => e.AvatarUrl).HasMaxLength(50);
+            entity.Property(e => e.AvatarUrl).HasMaxLength(200);
             entity.Property(e => e.DenyRes).HasMaxLength(50);
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FullName).HasMaxLength(100);
@@ -151,7 +151,7 @@ public partial class GoodsExchangeApplication2024DbContext : DbContext
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.DenyRes).HasMaxLength(50);
             entity.Property(e => e.Description).HasMaxLength(400);
-            entity.Property(e => e.ImagePro).HasMaxLength(50);
+            entity.Property(e => e.ImagePro).HasMaxLength(200);
             entity.Property(e => e.IsDisplay)
                 .HasMaxLength(50)
                 .HasColumnName("is_Display");

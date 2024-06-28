@@ -5,6 +5,7 @@ using goods_server.Core.Models;
 using goods_server.Service.FilterModel.Helper;
 using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,13 @@ namespace goods_server.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IProductService _productService;
 
-        public CommentService(IUnitOfWork unitOfWork, IMapper mapper)
+        public CommentService(IUnitOfWork unitOfWork, IMapper mapper, IProductService productService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _productService = productService;
         }
 
         public async Task<bool> CreateCommentAsync(CommentDTO commentDto)
@@ -31,7 +34,15 @@ namespace goods_server.Service.Services
             comment.PostDate = DateTime.UtcNow;
             await _unitOfWork.CommentRepo.AddAsync(comment);
             var result = await _unitOfWork.SaveAsync() > 0;
-            return result;
+            if (result)
+            {
+                var check = await _productService.UpdateCommentProduct(commentDto.ProductId,true);
+                if (check)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
 
@@ -50,7 +61,18 @@ namespace goods_server.Service.Services
      
         public async Task<bool> DeleteCommentAsync(Guid commentId)
         {
-            return await _unitOfWork.CommentRepo.DeleteCommentAsync(commentId);
+            var comments = await _unitOfWork.CommentRepo.GetCommentByIdAsync(commentId);
+            if (comments != null)
+            {
+                //var check = await _productService.UpdateCommentProduct(comments.ProductId, false);               
+                _unitOfWork.CommentRepo.Delete(comments);
+                var result = await _unitOfWork.SaveAsync() > 0;
+                if (result)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<GetCommentDTO> GetCommentByIdAsync(Guid commentId)

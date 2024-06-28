@@ -18,5 +18,8 @@ namespace goods_server.Service.InterfaceService
         public Task<bool> UpdateRatingCommentProduct(Guid id, UpdateRatingProductDTO productDTO);
         public Task<bool> UpdateStatusProduct(Guid id, UpdateStatusProductDTO productDTO);
         public Task<PagedResult<GetProduct2DTO>> GetAllProductAsync<T>(ProductFilter productFilter);
+        public Task<GetProduct2DTO> GetProductById(Guid id);
+        public Task<bool> UpdateRatingProduct(Guid? id, int? rate);
+        public Task<bool> UpdateCommentProduct(Guid? id, bool comment);
     }
 }

@@ -13,11 +13,13 @@ namespace goods_server.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IProductService _productService;
 
-        public RatingService(IUnitOfWork unitOfWork, IMapper mapper)
+        public RatingService(IUnitOfWork unitOfWork, IMapper mapper, IProductService productService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _productService = productService;
         }
 
         public async Task<IEnumerable<RatingDTO>> GetAllRatingsAsync()
@@ -38,7 +40,16 @@ namespace goods_server.Service.Services
             newRating.Id = Guid.NewGuid();
             newRating.CreatedDate = DateTime.UtcNow;
             await _unitOfWork.RatingRepo.AddAsync(newRating);
-            return await _unitOfWork.SaveAsync() > 0;
+            var check = await _unitOfWork.SaveAsync() > 0;
+            if (check)
+            {
+                var result = await _productService.UpdateRatingProduct(rating.ProductId, rating.Rated);
+                if (result)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<bool> UpdateRatingAsync(Guid ratingId, UpdateRatingDTO rating)

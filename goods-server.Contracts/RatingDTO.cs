@@ -13,7 +13,7 @@
     public class CreateRatingDTO
     {
         public Guid? CustomerId { get; set; }
-        public Guid? ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public string? Descript { get; set; }
         public int? Rated { get; set; }
     }

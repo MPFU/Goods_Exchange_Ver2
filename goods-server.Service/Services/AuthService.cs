@@ -51,7 +51,7 @@ namespace goods_server.Service.Services
             }
         }
 
-        private string CreateToken(GetAccountDTO account)
+        private string CreateToken(GetAccount2DTO account)
         {
             var nowUtc = DateTime.UtcNow;
             var expirationDuration = TimeSpan.FromMinutes(60);
@@ -74,7 +74,7 @@ namespace goods_server.Service.Services
                 new Claim(JwtRegisteredClaimNames.Aud,
                                   _configuration.GetSection("JwtSecurityToken:Audience").Value),
                 new Claim(ClaimTypes.Email, account.Email),
-                new Claim(ClaimTypes.Role, account.RoleId.ToString()),
+                new Claim(ClaimTypes.Role, account.Role.Name),
                 new Claim("AccountId", account.AccountId.ToString()),
                 new Claim(ClaimTypes.UserData, account.UserName.ToString())
             };
