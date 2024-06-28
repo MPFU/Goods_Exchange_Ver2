@@ -16,7 +16,7 @@ namespace goods_server.Service.InterfaceService
 
         Task<GetAccount2DTO?> GetAccountByUsernameAsync(string username);
 
-        Task<GetAccountDTO?> GetAccountByEmailAndPasswordAsync(string email, string password);
+        Task<GetAccount2DTO?> GetAccountByEmailAndPasswordAsync(string email, string password);
 
         Task<bool> CreateAccountAsync(RegisterDTO account);
 

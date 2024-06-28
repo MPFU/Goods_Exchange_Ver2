@@ -34,7 +34,7 @@ namespace goods_server.Service.Services
                 account.JoinDate = DateTime.UtcNow;
                 account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(register.PasswordHash);
                 account.Status = "Active";
-                account.AccountId = Guid.NewGuid();
+                account.AccountId = Guid.NewGuid();                
                 var check = await _unitOfWork.AccountRepo.GetByEmailAsync(account.Email);
                 if(check != null)
                 {
@@ -65,14 +65,14 @@ namespace goods_server.Service.Services
             
         }
 
-        public async Task<GetAccountDTO?> GetAccountByEmailAndPasswordAsync(string email, string password)
+        public async Task<GetAccount2DTO?> GetAccountByEmailAndPasswordAsync(string email, string password)
         {
             var account = await _unitOfWork.AccountRepo.GetByEmailAsync(email);
             if (account != null)
             {
                 if(BCrypt.Net.BCrypt.Verify(password, account.PasswordHash))
                 {
-                    return _mapper.Map<GetAccountDTO>(account);
+                    return _mapper.Map<GetAccount2DTO>(account);
                 }
             }
             return null;
@@ -152,8 +152,8 @@ namespace goods_server.Service.Services
                 Items = pageItems,
                 PageNumber = accountFilter.PageNumber,
                 PageSize = accountFilter.PageSize,
-                TotalItem = accList.Count(),
-                TotalPages = (int)Math.Ceiling((decimal)accList.Count() / (decimal)accountFilter.PageSize)
+                TotalItem = filterAcc.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)filterAcc.Count() / (decimal)accountFilter.PageSize)
             };
         }
 

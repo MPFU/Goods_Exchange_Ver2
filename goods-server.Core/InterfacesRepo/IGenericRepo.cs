@@ -8,7 +8,7 @@ namespace goods_server.Core.Interfaces
 {
     public interface IGenericRepo<T> where T : class
     {
-        Task<T> GetByIdAsync(Guid id);
+        Task<T> GetByIdAsync(Guid? id);
 
         Task<IEnumerable<T>> GetAllAsync();
 

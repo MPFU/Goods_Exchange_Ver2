@@ -72,8 +72,6 @@ namespace goods_server.Contracts
 
         public Guid? CategoryId { get; set; }
 
-        public int? Discount { get; set; }
-
         public int? Quantity { get; set; }
 
         public Guid? CityId { get; set; }
