@@ -2,9 +2,12 @@
 using goods_server.Contracts;
 using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel;
+using goods_server.Service.FilterModel.Helper;
 using goods_server.Service.InterfaceService;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace goods_server.Service.Services
@@ -20,16 +23,64 @@ namespace goods_server.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<RatingDTO>> GetAllRatingsAsync()
+        public async Task<PagedResult<RatingDTO>> GetAllRatingsAsync(RatingFilter filter)
         {
             var ratings = await _unitOfWork.RatingRepo.GetAllAsync();
-            return _mapper.Map<IEnumerable<RatingDTO>>(ratings);
+
+            var query = ratings.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter.SortBy))
+            {
+                query = filter.SortAscending ? query.OrderBy(r => GetProperty.GetPropertyValue(r, filter.SortBy)) : query.OrderByDescending(r => GetProperty.GetPropertyValue(r, filter.SortBy));
+            }
+
+            var totalItems = query.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / filter.PageSize);
+            var items = query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToList();
+
+            var result = new PagedResult<RatingDTO>
+            {
+                Items = _mapper.Map<IEnumerable<RatingDTO>>(items),
+                TotalItem = totalItems,
+                PageSize = filter.PageSize,
+                TotalPages = totalPages,
+                PageNumber = filter.PageNumber
+            };
+
+            return result;
         }
 
         public async Task<RatingDTO?> GetRatingByCustomerAndProductIdAsync(Guid customerId, Guid productId)
         {
             var rating = await _unitOfWork.RatingRepo.GetByCustomerAndProductIdAsync(customerId, productId);
             return _mapper.Map<RatingDTO>(rating);
+        }
+
+        public async Task<PagedResult<RatingDTO>> GetRatingsByProductIdAsync(RatingFilter filter)
+        {
+            var ratings = await _unitOfWork.RatingRepo.FindAsync(r => r.ProductId == filter.ProductId);
+
+            var query = ratings.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter.SortBy))
+            {
+                query = filter.SortAscending ? query.OrderBy(r => GetProperty.GetPropertyValue(r, filter.SortBy)) : query.OrderByDescending(r => GetProperty.GetPropertyValue(r, filter.SortBy));
+            }
+
+            var totalItems = query.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / filter.PageSize);
+            var items = query.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToList();
+
+            var result = new PagedResult<RatingDTO>
+            {
+                Items = _mapper.Map<IEnumerable<RatingDTO>>(items),
+                TotalItem = totalItems,
+                PageSize = filter.PageSize,
+                TotalPages = totalPages,
+                PageNumber = filter.PageNumber
+            };
+
+            return result;
         }
 
         public async Task<bool> CreateRatingAsync(CreateRatingDTO rating)

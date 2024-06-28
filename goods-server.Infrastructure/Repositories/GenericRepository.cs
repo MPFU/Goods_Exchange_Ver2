@@ -3,43 +3,48 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace goods_server.Infrastructure.Repositories
 {
-    public class GenericRepository<T> : IGenericRepo<T> where T : class
+    public class GenericRepository<TEntity> : IGenericRepo<TEntity> where TEntity : class
     {
         protected readonly GoodsExchangeApplication2024DbContext _dbContext;
 
         public GenericRepository(GoodsExchangeApplication2024DbContext dbContext)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _dbContext = dbContext;
         }
 
-        public async Task<T?> GetByIdAsync(Guid id)
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await _dbContext.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<TEntity?> GetByIdAsync(Guid id)
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            await _dbContext.Set<T>().AddAsync(entity);
+            return await _dbContext.Set<TEntity>().Where(predicate).ToListAsync();
         }
 
-        public void Update(T entity)
+        public async Task AddAsync(TEntity entity)
         {
-            _dbContext.Set<T>().Update(entity);
+            await _dbContext.Set<TEntity>().AddAsync(entity);
         }
 
-        public void Delete(T entity)
+        public void Update(TEntity entity)
         {
-            _dbContext.Set<T>().Remove(entity);
+            _dbContext.Set<TEntity>().Update(entity);
+        }
+
+        public void Delete(TEntity entity)
+        {
+            _dbContext.Set<TEntity>().Remove(entity);
         }
     }
 }
