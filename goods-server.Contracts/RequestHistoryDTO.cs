@@ -40,7 +40,8 @@ namespace goods_server.Contracts
 
         public Guid? ProductBuyerId { get; set; }
         public string? Status { get; set; }
-
+        public Guid? BuyerId { get; set; }
+        public Guid? SellerId { get; set; }
     }
 
 }

@@ -2,6 +2,8 @@
 using goods_server.Contracts;
 using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel.Helper;
+using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
 using Microsoft.Identity.Client;
 using System;
@@ -56,6 +58,7 @@ namespace goods_server.Service.Services
             return await _unitOfWork.CommentRepo.UpdateCommentAsync(commentId, comment);
         }
 
+     
         public async Task<bool> DeleteCommentAsync(Guid commentId)
         {
             var comments = await _unitOfWork.CommentRepo.GetCommentByIdAsync(commentId);
@@ -83,6 +86,29 @@ namespace goods_server.Service.Services
             var comments = await _unitOfWork.CommentRepo.GetCommentsByProductIdAsync(productId);
             return _mapper.Map<IEnumerable<GetCommentDTO>>(comments);
         }
+
+        public async Task<PagedResult<CommentDTO>> GetCommentsByProductIdAsync(CommentFilter filter)
+        {
+            var commentList = _mapper.Map<IEnumerable<CommentDTO>>(await _unitOfWork.CommentRepo.GetCommentsByProductIdAsync(filter.ProductId));
+            IQueryable<CommentDTO> filterComment = commentList.AsQueryable();
+
+            // Paging
+            var pageItems = filterComment
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToList();
+
+            return new PagedResult<CommentDTO>
+            {
+                Items = pageItems,
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalItem = commentList.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)commentList.Count() / filter.PageSize)
+            };
+        }
+
+
 
 
     }

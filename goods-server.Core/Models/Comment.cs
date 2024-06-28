@@ -5,7 +5,7 @@ namespace goods_server.Core.Models;
 
 public partial class Comment
 {
-    public Guid CommentId { get; set; }
+     public Guid CommentId { get; set; }
 
     public Guid? CommenterId { get; set; }
 

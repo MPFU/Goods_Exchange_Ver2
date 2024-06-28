@@ -47,13 +47,16 @@ namespace goods_server.Service.Services
                 return false;
             }
 
+            existingRequestHistory.BuyerId = requestHistoryDto.BuyerId; // Cập nhật BuyerId
+            existingRequestHistory.SellerId = requestHistoryDto.SellerId; // Cập nhật SellerId
             existingRequestHistory.ProductSellerId = requestHistoryDto.ProductSellerId; // Cập nhật ProductSellerId
             existingRequestHistory.ProductBuyerId = requestHistoryDto.ProductBuyerId; // Cập nhật ProductBuyerId
-            existingRequestHistory.Status = requestHistoryDto.Status;
+            existingRequestHistory.Status = requestHistoryDto.Status; // Cập nhật Status
             _unitOfWork.RequestHistoryRepo.Update(existingRequestHistory);
             var result = await _unitOfWork.SaveAsync() > 0;
             return result;
         }
+
 
 
         public async Task<bool> DeleteRequestHistoryAsync(Guid requestId)

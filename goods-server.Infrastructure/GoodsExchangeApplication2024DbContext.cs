@@ -56,10 +56,9 @@ public partial class GoodsExchangeApplication2024DbContext : DbContext
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true)
             .Build();
-        
 
-        connectionString = config.GetConnectionString("DefaultDatabase");
-        return connectionString;
+        connectionString = config.GetConnectionString("TruongDatabase");
+              return connectionString;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
