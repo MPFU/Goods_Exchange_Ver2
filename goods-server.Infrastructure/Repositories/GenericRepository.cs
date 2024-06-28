@@ -17,7 +17,7 @@ namespace goods_server.Infrastructure.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<T?> GetByIdAsync(Guid id)
+        public async Task<T?> GetByIdAsync(Guid? id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }

@@ -152,8 +152,8 @@ namespace goods_server.Service.Services
                 Items = pageItems,
                 PageNumber = accountFilter.PageNumber,
                 PageSize = accountFilter.PageSize,
-                TotalItem = accList.Count(),
-                TotalPages = (int)Math.Ceiling((decimal)accList.Count() / (decimal)accountFilter.PageSize)
+                TotalItem = filterAcc.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)filterAcc.Count() / (decimal)accountFilter.PageSize)
             };
         }
 

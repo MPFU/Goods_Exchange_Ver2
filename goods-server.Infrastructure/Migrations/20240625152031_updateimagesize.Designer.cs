@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using goods_server.Infrastructure;
 
@@ -11,9 +12,11 @@ using goods_server.Infrastructure;
 namespace goods_server.Infrastructure.Migrations
 {
     [DbContext(typeof(GoodsExchangeApplication2024DbContext))]
-    partial class GoodsExchangeApplication2024DbContextModelSnapshot : ModelSnapshot
+    [Migration("20240625152031_updateimagesize")]
+    partial class updateimagesize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

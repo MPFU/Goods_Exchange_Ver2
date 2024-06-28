@@ -40,6 +40,12 @@ namespace goods_server.Service.Services
 
         public async Task<bool> CreateCategoryAsync(CreateCategoryDTO category)
         {
+            var existingCategory = await _unitOfWork.CategoryRepo.GetByNameAsync(category.Name);
+            if (existingCategory != null)
+            {
+                throw new ArgumentException("Category with the same name already exists.");
+            }
+
             var newCategory = _mapper.Map<Category>(category);
             newCategory.CategoryId = Guid.NewGuid();
             await _unitOfWork.CategoryRepo.AddAsync(newCategory);
@@ -52,6 +58,12 @@ namespace goods_server.Service.Services
             if (existingCategory == null)
             {
                 return false;
+            }
+
+            var categoryWithSameName = await _unitOfWork.CategoryRepo.GetByNameAsync(category.Name);
+            if (categoryWithSameName != null && categoryWithSameName.CategoryId != categoryId)
+            {
+                throw new ArgumentException("Category with the same name already exists.");
             }
 
             _mapper.Map(category, existingCategory);

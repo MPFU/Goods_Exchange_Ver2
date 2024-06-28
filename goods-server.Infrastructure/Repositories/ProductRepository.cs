@@ -24,5 +24,14 @@ namespace goods_server.Infrastructure.Repositories
                 .Include(x => x.Genre)
                 .ToListAsync();
         }
+
+        public async Task<Product?> GetProductById(Guid id)
+        {
+            return await _dbContext.Products
+                .Include(x => x.City)
+                .Include(x => x.Category)
+                .Include(x => x.Genre)
+                .FirstOrDefaultAsync(y => y.ProductId == id);
+        }
     }
 }

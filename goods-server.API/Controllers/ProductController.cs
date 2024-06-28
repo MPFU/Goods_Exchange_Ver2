@@ -27,7 +27,7 @@ namespace goods_server.API.Controllers
         {
             try
             {
-                var check = await _productService.GetProduct(id);
+                var check = await _productService.GetProductById(id);
                 if (check == null)
                 {
                     return NotFound();
@@ -62,7 +62,10 @@ namespace goods_server.API.Controllers
                 {
                     return BadRequest("Create Fail!...");
                 }
-                return Ok("Create Success...");
+                return Ok(new SucceededResponseModel(){
+                    Status = Ok().StatusCode,
+                    Message = "Create Product Success...", 
+                });
             }catch (Exception ex)
             {
                 return BadRequest(ex.Message);
