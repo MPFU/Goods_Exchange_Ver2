@@ -1,5 +1,6 @@
 ﻿using artshare_server.WebAPI.ResponseModels;
 using goods_server.Contracts;
+using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -85,6 +86,7 @@ namespace goods_server.API.Controllers
             }
         }
 
+      
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(Guid commentId)
         {
@@ -115,11 +117,23 @@ namespace goods_server.API.Controllers
         }
 
         [HttpGet("{productId}")]
-        public async Task<IActionResult> GetCommentsByProductId(Guid productId)
+        public async Task<IActionResult> GetCommentsByProductId([FromQuery] CommentFilter filter)
         {
-            var comments = await _commentService.GetCommentsByProductIdAsync(productId);
-            return Ok(comments);
+            try
+            {
+                var comments = await _commentService.GetCommentsByProductIdAsync(filter);
+                if (comments == null)
+                {
+                    return NotFound();
+                }
+                return Ok(comments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
 
     }
 
