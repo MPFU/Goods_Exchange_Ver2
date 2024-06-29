@@ -9,11 +9,16 @@ using System.Threading.Tasks;
 
 namespace goods_server.Infrastructure.Repositories
 {
-    public class ReplyCommentRepository : GenericRepository<ReplyComment>,IReplyCommentRepo
+    public class ReplyCommentRepository : GenericRepository<ReplyComment>,IReplyCommentRepo 
     {
         public ReplyCommentRepository(GoodsExchangeApplication2024DbContext dbContext) : base(dbContext)
         {
             
+        }
+
+        public async Task<int> CountReplyByCommentID(Guid? commentID)
+        {
+            return await _dbContext.ReplyComments.Where(x => x.CommentId.Equals(commentID)).CountAsync();
         }
 
         public async Task<ReplyComment?> GetReplyCommentByCommenterAsync(Guid id)

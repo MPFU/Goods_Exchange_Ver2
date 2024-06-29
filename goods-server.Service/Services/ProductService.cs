@@ -156,14 +156,14 @@ namespace goods_server.Service.Services
             return _mapper.Map<GetProduct2DTO>(await _unitOfWork.ProductRepo.GetProductById(id));
         }
 
-        public async Task<bool> UpdateCommentProduct(Guid? id, bool comment)
+        public async Task<bool> UpdateCommentProduct(Guid? proId, Guid? commentId)
         {
             try
             {
-                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(proId);
                 if (product != null)
                 {
-                    product.CommentCount = comment == true ? product.CommentCount + 1 : (product.CommentCount != 0 ? product.CommentCount - 1 : 0);
+                    product.CommentCount = await _unitOfWork.CommentRepo.CountCommentByProID(proId) + await _unitOfWork.ReplyCommentRepo.CountReplyByCommentID(commentId);
                     _unitOfWork.ProductRepo.Update(product);
                     var result = await _unitOfWork.SaveAsync() > 0;
                     return result;
@@ -236,7 +236,7 @@ namespace goods_server.Service.Services
                 if (product != null)
                 {
                     product.Rated = (rate != null || rate > 0) ? (product.Rated + rate) / 2 : product.Rated;
-                    product.RatedCount = product.RatedCount + 1;                   
+                    product.RatedCount = _unitOfWork.RatingRepo.CountRatingbyProId(id) != null ?await _unitOfWork.RatingRepo.CountRatingbyProId(id) : product.RatedCount;                   
                     _unitOfWork.ProductRepo.Update(product);
                     var result = await _unitOfWork.SaveAsync() > 0;
                     return result;

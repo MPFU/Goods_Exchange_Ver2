@@ -12,5 +12,6 @@ namespace goods_server.Core.InterfacesRepo
     {
         public Task<ReplyComment?> GetReplyCommentByCommentIDAsync(Guid id);
         public Task<ReplyComment?> GetReplyCommentByCommenterAsync(Guid id);
+        Task<int> CountReplyByCommentID(Guid? commentID);
     }
 }

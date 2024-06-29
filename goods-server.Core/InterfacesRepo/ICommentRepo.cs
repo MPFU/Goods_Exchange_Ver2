@@ -15,7 +15,7 @@ namespace goods_server.Core.InterfacesRepo
         Task<bool> DeleteCommentAsync(Guid commentId);
         Task<Comment> GetCommentByIdAsync(Guid commentId);
         Task<IEnumerable<Comment>> GetCommentsByProductIdAsync(Guid productId);
-
+        Task<int> CountCommentByProID (Guid? proID);
     }
 
 }
