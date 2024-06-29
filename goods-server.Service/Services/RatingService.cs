@@ -26,7 +26,6 @@ namespace goods_server.Service.Services
         public async Task<PagedResult<RatingDTO>> GetAllRatingsAsync(RatingFilter filter)
         {
             var ratings = await _unitOfWork.RatingRepo.GetAllAsync();
-
             var query = ratings.AsQueryable();
 
             if (!string.IsNullOrEmpty(filter.SortBy))
@@ -59,7 +58,6 @@ namespace goods_server.Service.Services
         public async Task<PagedResult<RatingDTO>> GetRatingsByProductIdAsync(RatingFilter filter)
         {
             var ratings = await _unitOfWork.RatingRepo.FindAsync(r => r.ProductId == filter.ProductId);
-
             var query = ratings.AsQueryable();
 
             if (!string.IsNullOrEmpty(filter.SortBy))

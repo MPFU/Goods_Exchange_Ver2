@@ -1,6 +1,6 @@
 ﻿using goods_server.Contracts;
-using goods_server.Service.FilterModel;
 using goods_server.Service.FilterModel.Helper;
+using goods_server.Service.FilterModel; // Ensure this is included
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
