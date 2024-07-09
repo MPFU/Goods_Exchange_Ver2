@@ -1,5 +1,6 @@
 ﻿using artshare_server.WebAPI.ResponseModels;
 using goods_server.Contracts;
+using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
 using goods_server.Service.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -52,22 +53,11 @@ namespace goods_server.API.Controllers
             }
         }
 
-        [HttpGet("{accountId}")]
-        public async Task<IActionResult> GetRequestHistoriesByAccountId(Guid accountId)
+        [HttpGet]
+        public async Task<IActionResult> GetRequestHistoriesByAccountId([FromQuery] RequestHistoryFilter filter)
         {
-            try
-            {
-                var requestHistories = await _requestHistoryService.GetRequestHistoriesByAccountIdAsync(accountId);
-                if (requestHistories == null)
-                {
-                    return NotFound();
-                }
-                return Ok(requestHistories);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var pagedResult = await _requestHistoryService.GetRequestHistoriesByAccountIdAsync(filter);
+            return Ok(pagedResult);
         }
 
         [HttpGet("{requestHistoryId}")]

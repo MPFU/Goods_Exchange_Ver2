@@ -2,6 +2,8 @@
 using goods_server.Contracts;
 using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel.Helper;
+using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
 using System;
 using System.Collections.Generic;
@@ -33,12 +35,7 @@ namespace goods_server.Service.Services
         }
 
 
-        public async Task<IEnumerable<GetRequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(Guid accountId)
-        {
-            var requestHistories = await _unitOfWork.RequestHistoryRepo.GetRequestHistoriesByAccountIdAsync(accountId);
-            return _mapper.Map<IEnumerable<GetRequestHistoryDTO>>(requestHistories);
-        }
-
+      
         public async Task<bool> UpdateRequestHistoryAsync(Guid requestHistoryId, UpdateRequestHistoryDTO requestHistoryDto)
         {
             var existingRequestHistory = await _unitOfWork.RequestHistoryRepo.GetRequestHistoryByIdAsync(requestHistoryId);
@@ -74,6 +71,27 @@ namespace goods_server.Service.Services
         {
             var requestHistory = await _unitOfWork.RequestHistoryRepo.GetRequestHistoryByIdAsync(requestHistoryId);
             return _mapper.Map<GetRequestHistoryDTO>(requestHistory);
+        }
+
+        public async Task<PagedResult<GetRequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(RequestHistoryFilter filter)
+        {
+            var requestHistoryList = _mapper.Map<IEnumerable<GetRequestHistoryDTO>>(await _unitOfWork.RequestHistoryRepo.GetRequestHistoriesByAccountIdAsync(filter.AccountId));
+            IQueryable<GetRequestHistoryDTO> filterRequestHistory = requestHistoryList.AsQueryable();
+
+            // Paging
+            var pageItems = filterRequestHistory
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToList();
+
+            return new PagedResult<GetRequestHistoryDTO>
+            {
+                Items = pageItems,
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalItem = requestHistoryList.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)requestHistoryList.Count() / filter.PageSize)
+            };
         }
 
     }
