@@ -1,4 +1,6 @@
 ﻿using goods_server.Core.Models;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace goods_server.Core.Interfaces
@@ -7,5 +9,6 @@ namespace goods_server.Core.Interfaces
     {
         Task<Rating?> GetByCustomerAndProductIdAsync(Guid customerId, Guid productId);
         Task<int?> CountRatingbyProId(Guid? proId);
+        Task<IEnumerable<Rating>> FindAsync(Func<Rating, bool> predicate); // Add this line
     }
 }

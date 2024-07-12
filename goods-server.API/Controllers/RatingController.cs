@@ -1,4 +1,5 @@
 ﻿using goods_server.Contracts;
+using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,9 +19,9 @@ namespace goods_server.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRatings()
+        public async Task<IActionResult> GetAllRatings([FromQuery] RatingFilter filter)
         {
-            var ratings = await _ratingService.GetAllRatingsAsync();
+            var ratings = await _ratingService.GetAllRatingsAsync(filter);
             return Ok(ratings);
         }
 
@@ -33,6 +34,13 @@ namespace goods_server.API.Controllers
                 return NotFound();
             }
             return Ok(rating);
+        }
+
+        [HttpGet("ByProduct")]
+        public async Task<IActionResult> GetRatingsByProductId([FromQuery] RatingFilter filter)
+        {
+            var ratings = await _ratingService.GetRatingsByProductIdAsync(filter);
+            return Ok(ratings);
         }
 
         [HttpPost]
