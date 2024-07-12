@@ -59,6 +59,11 @@ namespace goods_server.Infrastructure.Repositories
             return await _dbContext.Comments.Where(x => x.ProductId == productId).ToListAsync();
         }
 
+        public async Task<int> CountCommentByProID(Guid? proID)
+        {
+            return await _dbContext.Comments.Where(x => x.ProductId.Equals(proID)).CountAsync();
+             
+        }
     }
 
 

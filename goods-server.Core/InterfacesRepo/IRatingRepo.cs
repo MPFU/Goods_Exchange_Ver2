@@ -8,6 +8,7 @@ namespace goods_server.Core.Interfaces
     public interface IRatingRepo : IGenericRepo<Rating>
     {
         Task<Rating?> GetByCustomerAndProductIdAsync(Guid customerId, Guid productId);
+        Task<int?> CountRatingbyProId(Guid? proId);
         Task<IEnumerable<Rating>> FindAsync(Func<Rating, bool> predicate); // Add this line
     }
 }

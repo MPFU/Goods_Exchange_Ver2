@@ -57,7 +57,7 @@ public partial class GoodsExchangeApplication2024DbContext : DbContext
             .AddJsonFile("appsettings.json", true, true)
             .Build();
 
-        connectionString = config.GetConnectionString("TruongDatabase");
+        connectionString = config.GetConnectionString("DefaultDatabase");
               return connectionString;
     }
 

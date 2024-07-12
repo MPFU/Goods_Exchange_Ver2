@@ -16,11 +16,13 @@ namespace goods_server.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IProductService _productService;
 
-        public ReplyCommentService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ReplyCommentService(IUnitOfWork unitOfWork, IMapper mapper, IProductService productService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _productService = productService;
         }
 
         public async Task<bool> CreateReplyCommentAsync(CreateReplyDTO replyDTO)
@@ -29,10 +31,22 @@ namespace goods_server.Service.Services
             {
                 var reply = _mapper.Map<ReplyComment>(replyDTO);
                 reply.PostDate = DateTime.UtcNow;
-
+                reply.ReplyId = Guid.NewGuid();
                 await _unitOfWork.ReplyCommentRepo.AddAsync(reply);
                 var result = await _unitOfWork.SaveAsync() > 0;
-                return result;
+                if(result)
+                {
+                    var comment = await _unitOfWork.CommentRepo.GetByIdAsync(reply.CommentId);
+                    if(comment != null)
+                    {
+                        var check = await _productService.UpdateCommentProduct(comment.ProductId, comment.CommentId);
+                        if (check)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }catch(DbUpdateException)
             {
                 throw;
