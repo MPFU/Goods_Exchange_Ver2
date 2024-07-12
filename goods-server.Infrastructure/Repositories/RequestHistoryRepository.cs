@@ -53,6 +53,49 @@ namespace goods_server.Infrastructure.Repositories
             return await _dbContext.RequestHistories.FindAsync(requestHistoryId);
         }
 
-    }
+        public async Task<IEnumerable<RequestHistory>> GetAllRequestHistories()
+        {
+            // Thay đổi dựa trên cấu trúc dữ liệu của bạn
+            return await _dbContext.RequestHistories
+                .Include(x => x.Buyer)
+                .Include(x => x.Seller)
+                .Include(x => x.ProductSeller)
+                .Include(x => x.ProductBuyer)
+                .ToListAsync();
+        }
 
+        public async Task<RequestHistory?> GetByBuyerIdAsync(Guid buyerId)
+        {
+            return await _dbContext.RequestHistories
+                .Include(x => x.Buyer)
+                .Where(x => x.BuyerId == buyerId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<RequestHistory?> GetBySellerIdAsync(Guid sellerId)
+        {
+            return await _dbContext.RequestHistories
+                .Include(x => x.Seller)
+                .Where(x => x.SellerId == sellerId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<RequestHistory?> GetByProductSellerIdAsync(Guid productSellerId)
+        {
+            return await _dbContext.RequestHistories
+                .Include(x => x.ProductSeller)
+                .Where(x => x.ProductSellerId == productSellerId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<RequestHistory?> GetByProductBuyerIdAsync(Guid productBuyerId)
+        {
+            return await _dbContext.RequestHistories
+                .Include(x => x.ProductBuyer)
+                .Where(x => x.ProductBuyerId == productBuyerId)
+                .FirstOrDefaultAsync();
+        }
+    }
 }
+
+

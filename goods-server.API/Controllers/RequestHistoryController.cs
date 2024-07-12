@@ -109,10 +109,11 @@ namespace goods_server.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRequestHistories()
+        public async Task<IActionResult> GetAllRequestHistories([FromQuery] RequestHistoryFilter filter)
         {
-            var requestHistories = await _requestHistoryService.GetAllRequestHistoriesAsync();
-            return Ok(requestHistories);
+            var pagedResult = await _requestHistoryService.GetAllRequestHistoriesAsync(filter);
+            return Ok(pagedResult);
         }
+
     }
 }

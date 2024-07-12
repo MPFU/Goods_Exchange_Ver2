@@ -14,6 +14,11 @@ namespace goods_server.Core.InterfacesRepo
         Task<bool> UpdateRequestHistoryAsync(Guid requestId, RequestHistory requestHistory);
         Task<bool> DeleteRequestHistoryAsync(Guid requestId);
         Task<RequestHistory> GetRequestHistoryByIdAsync(Guid requestHistoryId);
+        Task<RequestHistory?> GetByBuyerIdAsync(Guid buyerId);
+        Task<RequestHistory?> GetBySellerIdAsync(Guid sellerId);
+        Task<RequestHistory?> GetByProductSellerIdAsync(Guid productSellerId);
+        Task<RequestHistory?> GetByProductBuyerIdAsync(Guid productBuyerId);
+        Task<IEnumerable<RequestHistory>> GetAllRequestHistories();
 
     }
 }

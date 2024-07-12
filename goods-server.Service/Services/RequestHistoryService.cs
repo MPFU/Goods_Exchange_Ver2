@@ -61,12 +61,37 @@ namespace goods_server.Service.Services
             return await _unitOfWork.RequestHistoryRepo.DeleteRequestHistoryAsync(requestId);
         }
 
-        public async Task<IEnumerable<GetRequestHistoryDTO>> GetAllRequestHistoriesAsync()
+        public async Task<PagedResult<GetRequestHistoryDTO>> GetAllRequestHistoriesAsync(RequestHistoryFilter filter)
         {
-            var requestHistories = await _unitOfWork.RequestHistoryRepo.GetAllAsync();
-            return _mapper.Map<IEnumerable<GetRequestHistoryDTO>>(requestHistories);
-        }
+            var requestHistoryList = _mapper.Map<IEnumerable<GetRequestHistoryDTO>>(await _unitOfWork.RequestHistoryRepo.GetAllRequestHistories());
+            IQueryable<GetRequestHistoryDTO> filterRequestHistory = requestHistoryList.AsQueryable();
 
+            // Filtering
+            if (filter.BuyerId.HasValue)
+                filterRequestHistory = filterRequestHistory.Where(rh => rh.BuyerId == filter.BuyerId);
+            if (filter.SellerId.HasValue)
+                filterRequestHistory = filterRequestHistory.Where(rh => rh.SellerId == filter.SellerId);
+            if (filter.ProductSellerId.HasValue)
+                filterRequestHistory = filterRequestHistory.Where(rh => rh.ProductSellerId == filter.ProductSellerId);
+            if (filter.ProductBuyerId.HasValue)
+                filterRequestHistory = filterRequestHistory.Where(rh => rh.ProductBuyerId == filter.ProductBuyerId);
+         
+
+            // Paging
+            var pageItems = filterRequestHistory
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToList();
+
+            return new PagedResult<GetRequestHistoryDTO>
+            {
+                Items = pageItems,
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalItem = filterRequestHistory.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)filterRequestHistory.Count() / filter.PageSize)
+            };
+        }
         public async Task<GetRequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId)
         {
             var requestHistory = await _unitOfWork.RequestHistoryRepo.GetRequestHistoryByIdAsync(requestHistoryId);
