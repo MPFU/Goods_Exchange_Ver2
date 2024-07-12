@@ -44,4 +44,9 @@ namespace goods_server.Contracts
         public Guid? SellerId { get; set; }
     }
 
+    public class UpdateRequestHistoryStatusDTO
+    {
+        public string Status { get; set; }
+    }
+
 }
