@@ -119,6 +119,21 @@ namespace goods_server.Service.Services
             };
         }
 
+        public async Task<bool> UpdateStatusAsync(Guid requestHistoryId, UpdateRequestHistoryStatusDTO statusDto)
+        {
+            var requestHistory = await _unitOfWork.RequestHistoryRepo.GetByIdAsync(requestHistoryId);
+            if (requestHistory == null)
+            {
+                return false;
+            }
+
+            requestHistory.Status = statusDto.Status;
+            _unitOfWork.RequestHistoryRepo.Update(requestHistory);
+            await _unitOfWork.SaveAsync();
+
+            return true;
+        }
+
     }
 
 

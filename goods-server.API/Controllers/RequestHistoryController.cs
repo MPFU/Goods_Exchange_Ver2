@@ -90,6 +90,18 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [HttpPut("{requestHistoryId}/status")]
+        public async Task<IActionResult> UpdateStatus(Guid requestHistoryId, [FromBody] UpdateRequestHistoryStatusDTO statusDto)
+        {
+            var result = await _requestHistoryService.UpdateStatusAsync(requestHistoryId, statusDto);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
         [HttpDelete("{requestId}")]
         public async Task<IActionResult> DeleteRequestHistory(Guid requestId)
         {

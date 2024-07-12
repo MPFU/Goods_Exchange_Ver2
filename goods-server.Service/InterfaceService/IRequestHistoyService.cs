@@ -17,6 +17,7 @@ namespace goods_server.Service.InterfaceService
         Task<bool> UpdateRequestHistoryAsync(Guid requestId, UpdateRequestHistoryDTO requestHistory);
         Task<bool> DeleteRequestHistoryAsync(Guid requestId);
         Task<GetRequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId);
+        Task<bool> UpdateStatusAsync(Guid requestHistoryId, UpdateRequestHistoryStatusDTO statusDto);
 
 
     }
