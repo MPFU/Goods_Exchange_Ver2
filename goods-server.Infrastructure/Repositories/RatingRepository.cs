@@ -14,6 +14,11 @@ namespace goods_server.Infrastructure.Repositories
         {
         }
 
+        public async Task<int?> CountRatingbyProId(Guid? proId)
+        {
+            return await _dbContext.Ratings.Where(x => x.ProductId.Equals(proId)).CountAsync();
+        }
+
         public async Task<Rating?> GetByCustomerAndProductIdAsync(Guid customerId, Guid productId)
         {
             return await _dbContext.Ratings.FirstOrDefaultAsync(r => r.CustomerId == customerId && r.ProductId == productId);

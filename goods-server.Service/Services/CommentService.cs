@@ -36,7 +36,7 @@ namespace goods_server.Service.Services
             var result = await _unitOfWork.SaveAsync() > 0;
             if (result)
             {
-                var check = await _productService.UpdateCommentProduct(commentDto.ProductId,true);
+                var check = await _productService.UpdateCommentProduct(commentDto.ProductId,comment.CommentId);
                 if (check)
                 {
                     return true;
