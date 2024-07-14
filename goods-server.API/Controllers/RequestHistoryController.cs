@@ -80,13 +80,29 @@ namespace goods_server.API.Controllers
                 var result = await _requestHistoryService.UpdateRequestHistoryAsync(requestId, requestHistoryDto);
                 if (!result)
                 {
-                    return NotFound();
+                    return StatusCode(500, new FailedResponseModel
+                    {
+                        Status = 500,
+                        Message = "Update request history failed."
+                    });
                 }
-                return Ok();
+                return Ok(new SucceededResponseModel()
+                {
+                    Status = Ok().StatusCode,
+                    Message = "Success",
+                    Data = new
+                    {
+                        RequestHistory = requestHistoryDto
+                    }
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Conflict(new FailedResponseModel()
+                {
+                    Status = Conflict().StatusCode,
+                    Message = ex.Message
+                });
             }
         }
 
@@ -96,10 +112,22 @@ namespace goods_server.API.Controllers
             var result = await _requestHistoryService.UpdateStatusAsync(requestHistoryId, statusDto);
             if (!result)
             {
-                return NotFound();
+                return StatusCode(500, new FailedResponseModel
+                {
+                    Status = 500,
+                    Message = "Update status failed."
+                });
             }
 
-            return Ok();
+            return Ok(new SucceededResponseModel()
+            {
+                Status = Ok().StatusCode,
+                Message = "Success",
+                Data = new
+                {
+                    Status = statusDto.Status
+                }
+            });
         }
 
         [HttpDelete("{requestId}")]
@@ -110,13 +138,25 @@ namespace goods_server.API.Controllers
                 var result = await _requestHistoryService.DeleteRequestHistoryAsync(requestId);
                 if (!result)
                 {
-                    return NotFound();
+                    return StatusCode(500, new FailedResponseModel
+                    {
+                        Status = 500,
+                        Message = "Delete request history failed."
+                    });
                 }
-                return Ok();
+                return Ok(new SucceededResponseModel()
+                {
+                    Status = Ok().StatusCode,
+                    Message = "Success"
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Conflict(new FailedResponseModel()
+                {
+                    Status = Conflict().StatusCode,
+                    Message = ex.Message
+                });
             }
         }
 
