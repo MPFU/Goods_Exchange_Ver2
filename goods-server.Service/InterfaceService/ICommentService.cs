@@ -20,7 +20,7 @@ namespace goods_server.Service.InterfaceService
         Task<bool> DeleteCommentAsync(Guid commentId);
         Task<GetCommentDTO> GetCommentByIdAsync(Guid commentId);
         Task<IEnumerable<GetCommentDTO>> GetCommentsByProductIdAsync(Guid productId);
-        Task<PagedResult<CommentDTO>> GetCommentsByProductIdAsync(CommentFilter filter);
+        Task<PagedResult<GetCommentDTO>> GetCommentsByProductIdAsync(CommentFilter filter);
 
 
     }
