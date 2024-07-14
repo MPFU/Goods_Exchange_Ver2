@@ -116,7 +116,7 @@ namespace goods_server.API.Controllers
             return Ok(comment);
         }
 
-        [HttpGet("{productId}")]
+        [HttpGet]
         public async Task<IActionResult> GetCommentsByProductId([FromQuery] CommentFilter filter)
         {
             try
