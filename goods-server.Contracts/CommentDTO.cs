@@ -11,6 +11,7 @@ namespace goods_server.Contracts
         public Guid? CommenterId { get; set; }
         public Guid? ProductId { get; set; }
         public string? Descript { get; set; }
+        public DateTime? PostDate { get; set; }
     }
 
     public class GetCommentDTO
