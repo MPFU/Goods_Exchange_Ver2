@@ -28,13 +28,24 @@ namespace goods_server.Contracts
         public int RoleId { get; set; }      
     }
 
-    public class UpdateProfileDTO : RegisterDTO
+    public class UpdateProfileDTO 
     {
         public string? AvatarUrl { get; set; }
 
-        public string? DenyRes { get; set; }
+        public string? Email { get; set; }
+        
+        public string? OldPassword { get; set; }
 
-        public string? Status { get; set; }
+        public string? NewPassword { get; set; }
+
+        public string? ConfirmPassword { get; set; }
+
+        public string? UserName { get; set; }
+
+        public string? FullName { get; set; }
+
+        public string? PhoneNumber { get; set; }
+
     }
 
     public class AccountDTO

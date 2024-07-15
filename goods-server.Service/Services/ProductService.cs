@@ -20,7 +20,7 @@ namespace goods_server.Service.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ProductService(IUnitOfWork unitOfWork, IMapper mapper) 
+        public ProductService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -51,14 +51,15 @@ namespace goods_server.Service.Services
             try
             {
                 var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
-                if(product != null)
+                if (product != null)
                 {
                     _unitOfWork.ProductRepo.Delete(product);
                     var result = await _unitOfWork.SaveAsync() > 0;
                     return result;
                 }
                 return false;
-            }catch (DbUpdateException)
+            }
+            catch (DbUpdateException)
             {
                 throw;
             }
@@ -78,7 +79,7 @@ namespace goods_server.Service.Services
                 filterPo = filterPo.Where(x => x.CreatorId.Equals(productFilter.CreatorId));
 
             if (productFilter.Price != null)
-                filterPo = filterPo.Where(x => x.Price ==  productFilter.Price);
+                filterPo = filterPo.Where(x => x.Price == productFilter.Price);
 
             if (productFilter.Rated != null)
                 filterPo = filterPo.Where(x => x.Rated == productFilter.Rated);
@@ -97,8 +98,10 @@ namespace goods_server.Service.Services
 
             if (!string.IsNullOrEmpty(productFilter.IsDisplay))
                 filterPo = filterPo.Where(x => x.IsDisplay.Contains(productFilter.IsDisplay, StringComparison.OrdinalIgnoreCase));
-                // Sorting
-                if (!string.IsNullOrEmpty(productFilter.SortBy))
+
+
+            // Sorting
+            if (!string.IsNullOrEmpty(productFilter.SortBy))
             {
                 switch (productFilter.SortBy)
                 {
@@ -176,7 +179,7 @@ namespace goods_server.Service.Services
             }
         }
 
-        public async Task<bool> UpdateProduct(Guid id ,UpdateProductDTO updateProductDTO)
+        public async Task<bool> UpdateProduct(Guid id, UpdateProductDTO updateProductDTO)
         {
             try
             {
@@ -236,7 +239,7 @@ namespace goods_server.Service.Services
                 if (product != null)
                 {
                     product.Rated = (rate != null || rate > 0) ? (product.Rated + rate) / 2 : product.Rated;
-                    product.RatedCount = _unitOfWork.RatingRepo.CountRatingbyProId(id) != null ?await _unitOfWork.RatingRepo.CountRatingbyProId(id) : product.RatedCount;                   
+                    product.RatedCount = _unitOfWork.RatingRepo.CountRatingbyProId(id) != null ? await _unitOfWork.RatingRepo.CountRatingbyProId(id) : product.RatedCount;
                     _unitOfWork.ProductRepo.Update(product);
                     var result = await _unitOfWork.SaveAsync() > 0;
                     return result;

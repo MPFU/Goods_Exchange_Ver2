@@ -178,11 +178,8 @@ namespace goods_server.Service.Services
                     account2.AvatarUrl = (account.AvatarUrl != null) ? account.AvatarUrl : account2.AvatarUrl;
                     account2.PhoneNumber = account.PhoneNumber;
                     account2.UserName = account.UserName;
-                    account2.FullName = account.FullName;
-                    account2.Status = account.Status;
-                    account2.DenyRes = account.DenyRes;
-                    account2.RoleId = account.RoleId;
-                    account2.PasswordHash = (account.PasswordHash != null) ? BCrypt.Net.BCrypt.HashPassword(account.PasswordHash) : account2.PasswordHash;
+                    account2.FullName = account.FullName;               
+                    account2.PasswordHash = !string.IsNullOrEmpty(account.ConfirmPassword) ? BCrypt.Net.BCrypt.HashPassword(account.ConfirmPassword) : account2.PasswordHash;
                     _unitOfWork.AccountRepo.Update(account2);
                     var result = await _unitOfWork.SaveAsync() > 0;
                     return result;
@@ -193,6 +190,19 @@ namespace goods_server.Service.Services
             {
                 throw;
             }          
+        }
+
+        public async Task<int> CheckPassword(GetAccountDTO accountDTO, string? old, string? newPass, string? confirmPass)
+        {
+            if(old != null)
+            {
+                if (BCrypt.Net.BCrypt.Verify(old, accountDTO.PasswordHash))
+                {
+                   var check = newPass.Equals(confirmPass) ? 1 : -1;
+                    return check;
+                }
+            }
+            return 0;
         }
       
     }
