@@ -87,10 +87,11 @@ namespace goods_server.Service.Services
             return _mapper.Map<IEnumerable<GetCommentDTO>>(comments);
         }
 
-        public async Task<PagedResult<CommentDTO>> GetCommentsByProductIdAsync(CommentFilter filter)
+        public async Task<PagedResult<GetCommentDTO>> GetCommentsByProductIdAsync(CommentFilter filter)
         {
-            var commentList = _mapper.Map<IEnumerable<CommentDTO>>(await _unitOfWork.CommentRepo.GetCommentsByProductIdAsync(filter.ProductId));
-            IQueryable<CommentDTO> filterComment = commentList.AsQueryable();
+            var commentList = await _unitOfWork.CommentRepo.GetCommentsByProductIdAsync(filter.ProductId);
+            var getCommentDTOs = _mapper.Map<IEnumerable<GetCommentDTO>>(commentList);
+            IQueryable<GetCommentDTO> filterComment = getCommentDTOs.AsQueryable();
 
             // Paging
             var pageItems = filterComment
@@ -98,13 +99,13 @@ namespace goods_server.Service.Services
                 .Take(filter.PageSize)
                 .ToList();
 
-            return new PagedResult<CommentDTO>
+            return new PagedResult<GetCommentDTO>
             {
                 Items = pageItems,
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize,
-                TotalItem = commentList.Count(),
-                TotalPages = (int)Math.Ceiling((decimal)commentList.Count() / filter.PageSize)
+                TotalItem = getCommentDTOs.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)getCommentDTOs.Count() / filter.PageSize)
             };
         }
 
