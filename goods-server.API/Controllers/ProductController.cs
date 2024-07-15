@@ -123,18 +123,34 @@ namespace goods_server.API.Controllers
                 var check = await _productService.GetProduct(id);
                 if (check == null)
                 {
-                    return NotFound();
+                    return BadRequest(new FailedResponseModel
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "Not Found This Product!"
+                    });
                 }
                 var pro = await _productService.UpdateProduct(id, updateProduct);
                 if (pro)
                 {
-                    return Ok();
+                    return Ok(new SucceededResponseModel
+                    {
+                        Status= Ok().StatusCode,
+                        Message = "Update SUCCESS..."
+                    });
                 }
-                return BadRequest("Update Fail");
+                return BadRequest(new FailedResponseModel
+                {
+                    Status = BadRequest().StatusCode,
+                    Message = "Update Fail"
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new FailedResponseModel
+                {
+                    Status = BadRequest().StatusCode,
+                    Message = ex.ToString()
+                });
             }
         }
 

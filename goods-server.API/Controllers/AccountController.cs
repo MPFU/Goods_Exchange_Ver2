@@ -58,7 +58,7 @@ namespace goods_server.API.Controllers
                 return BadRequest(e.Message);
             }
         }
-    
+
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] RegisterDTO registerRequest)
         {
@@ -111,18 +111,78 @@ namespace goods_server.API.Controllers
                 var check = await _accountService.GetAccountByIdAsync(id);
                 if (check == null)
                 {
-                    return NotFound();
+                    return BadRequest(new FailedResponseModel
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "Not Found This Account!"
+                    });
+                }
+                if(!profileDTO.Email.Equals(check.Email))
+                {
+                    var acc1 = await _accountService.GetAccountByEmailAsync(profileDTO.Email);
+                    if (acc1 == null)
+                    {
+                        return BadRequest(new FailedResponseModel
+                        {
+                            Status = BadRequest().StatusCode,
+                            Message = "This Email has been used!"
+                        });
+                    }
+                }
+                if(!profileDTO.UserName.Equals(check.UserName))
+                {
+                    var use1 = await _accountService.GetAccountByUsernameAsync(profileDTO.UserName);
+                    if (use1 != null)
+                    {
+                        return BadRequest(new FailedResponseModel
+                        {
+                            Status = BadRequest().StatusCode,
+                            Message = "This Username has been used!"
+                        });
+                    }
+                }
+                if (!string.IsNullOrEmpty(profileDTO.NewPassword)  && !string.IsNullOrEmpty(profileDTO.ConfirmPassword))
+                {
+                    var pass = await _accountService.CheckPassword(check, profileDTO.OldPassword, profileDTO.NewPassword, profileDTO.ConfirmPassword);
+                    switch (pass)
+                    {
+                        case 0:
+                            return BadRequest(new FailedResponseModel
+                            {
+                                Status = BadRequest().StatusCode,
+                                Message = "Wrong Old Password!"
+                            });
+                        case -1:
+                            return BadRequest(new FailedResponseModel
+                            {
+                                Status = BadRequest().StatusCode,
+                                Message = "New and confirmed mismatched passwords!" 
+                            });
+                    }
                 }
                 var up = await _accountService.UpdateAccountAsync(id, profileDTO);
                 if (up)
                 {
-                    return Ok("Update SUCCESS!");
+                    return Ok(new SucceededResponseModel
+                    {
+                        Status = Ok().StatusCode,
+                        Message = "Update Profile SUCCESS..."
+                    });
                 }
-                return BadRequest("Update FAIL");
+                return BadRequest(new FailedResponseModel
+                {
+                    Status = BadRequest().StatusCode,
+                    Message = "Update FAIL!"
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new FailedResponseModel
+                {
+                    Status = BadRequest().StatusCode,
+                    Message = "Update FAIL!",
+                    Errors = ex.ToString()
+                });
             }
 
         }
@@ -162,7 +222,7 @@ namespace goods_server.API.Controllers
                         Message = "File is not selected or empty."
                     });
                 var imageExtensions = new[] { ".jpg", ".jpeg", ".png" };
-                if(imageExtensions.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)) == false)
+                if (imageExtensions.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)) == false)
                 {
                     return BadRequest(new FailedResponseModel()
                     {

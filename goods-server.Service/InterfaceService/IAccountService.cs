@@ -29,5 +29,7 @@ namespace goods_server.Service.InterfaceService
         Task<bool> DeleteAccountAsync(Guid accountId);
 
         Task<PagedResult<GetAccount2DTO>> GetAllAccountAsync<T>(AccountFilter accountFilter);
+
+        Task<int> CheckPassword(GetAccountDTO accountDTO, string? old, string? newPass, string? confirmPass);
     }
 }
