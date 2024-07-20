@@ -53,12 +53,7 @@ namespace goods_server.API.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetRequestHistoriesByAccountId([FromQuery] RequestHistoryFilter filter)
-        {
-            var pagedResult = await _requestHistoryService.GetRequestHistoriesByAccountIdAsync(filter);
-            return Ok(pagedResult);
-        }
+        
 
         [HttpGet("{requestHistoryId}")]
         public async Task<IActionResult> GetRequestHistoryById(Guid requestHistoryId)
@@ -163,9 +158,17 @@ namespace goods_server.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRequestHistories([FromQuery] RequestHistoryFilter filter)
         {
-            var pagedResult = await _requestHistoryService.GetAllRequestHistoriesAsync(filter);
-            return Ok(pagedResult);
+            try
+            {
+                var requestHistories = await _requestHistoryService.GetAllRequestHistoriesAsync(filter);
+                return Ok(requestHistories);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
 
     }
 }
