@@ -10,5 +10,6 @@ namespace goods_server.Service.FilterModel
         public Guid? SellerId { get; set; }
         public Guid? ProductSellerId { get; set; }
         public Guid? ProductBuyerId { get; set; }
+        public string Status { get; set; }
     }
 }
