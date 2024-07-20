@@ -75,7 +75,8 @@ namespace goods_server.Service.Services
                 filterRequestHistory = filterRequestHistory.Where(rh => rh.ProductSellerId == filter.ProductSellerId);
             if (filter.ProductBuyerId.HasValue)
                 filterRequestHistory = filterRequestHistory.Where(rh => rh.ProductBuyerId == filter.ProductBuyerId);
-         
+            if (!string.IsNullOrEmpty(filter.Status)) // Thêm điều kiện lọc cho Status
+                filterRequestHistory = filterRequestHistory.Where(rh => rh.Status == filter.Status);
 
             // Paging
             var pageItems = filterRequestHistory
@@ -92,6 +93,7 @@ namespace goods_server.Service.Services
                 TotalPages = (int)Math.Ceiling((decimal)filterRequestHistory.Count() / filter.PageSize)
             };
         }
+
         public async Task<GetRequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId)
         {
             var requestHistory = await _unitOfWork.RequestHistoryRepo.GetRequestHistoryByIdAsync(requestHistoryId);
