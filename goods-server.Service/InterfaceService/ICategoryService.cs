@@ -11,6 +11,6 @@ namespace goods_server.Service.InterfaceService
         Task<CategoryDTO?> GetCategoryByNameAsync(string name);
         Task<bool> CreateCategoryAsync(CreateCategoryDTO category);
         Task<bool> UpdateCategoryAsync(Guid categoryId, UpdateCategoryDTO category);
-        Task<bool> DeleteCategoryAsync(Guid categoryId);
+        Task<(bool success, string message)> DeleteCategoryAsync(Guid categoryId);
     }
 }

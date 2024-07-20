@@ -74,12 +74,12 @@ namespace goods_server.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            var result = await _categoryService.DeleteCategoryAsync(id);
-            if (result)
+            var (success, message) = await _categoryService.DeleteCategoryAsync(id);
+            if (success)
             {
-                return Ok("Category deleted successfully.");
+                return Ok(message);
             }
-            return BadRequest("Failed to delete category.");
+            return BadRequest(message);
         }
     }
 }
