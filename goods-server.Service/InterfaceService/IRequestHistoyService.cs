@@ -12,8 +12,7 @@ namespace goods_server.Service.InterfaceService
     public interface IRequestHistoyService
     {
         Task<bool> CreateRequestHistoryAsync(RequestHistoryDTO requestHistory);
-        Task<PagedResult<GetRequestHistoryDTO>> GetAllRequestHistoriesAsync(RequestHistoryFilter filter);
-        Task<PagedResult<GetRequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(RequestHistoryFilter filter);
+        Task<PagedResult<GetRequestHistory2DTO>> GetAllRequestHistoriesAsync(RequestHistoryFilter Requestfilter);
         Task<bool> UpdateRequestHistoryAsync(Guid requestId, UpdateRequestHistoryDTO requestHistory);
         Task<bool> DeleteRequestHistoryAsync(Guid requestId);
         Task<GetRequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId);
