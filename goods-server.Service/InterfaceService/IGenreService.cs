@@ -11,6 +11,6 @@ namespace goods_server.Service.InterfaceService
         Task<GenreDTO?> GetGenreByNameAsync(string name);
         Task<bool> CreateGenreAsync(CreateGenreDTO genre);
         Task<bool> UpdateGenreAsync(Guid genreId, UpdateGenreDTO genre);
-        Task<bool> DeleteGenreAsync(Guid genreId);
+        Task<(bool success, string message)> DeleteGenreAsync(Guid genreId);
     }
 }

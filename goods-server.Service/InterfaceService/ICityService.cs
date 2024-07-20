@@ -11,6 +11,6 @@ namespace goods_server.Service.InterfaceService
         Task<CityDTO?> GetCityByNameAsync(string name);
         Task<bool> CreateCityAsync(CreateCityDTO city);
         Task<bool> UpdateCityAsync(Guid cityId, UpdateCityDTO city);
-        Task<bool> DeleteCityAsync(Guid cityId);
+        Task<(bool success, string message)> DeleteCityAsync(Guid cityId);
     }
 }

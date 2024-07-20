@@ -15,5 +15,10 @@ namespace goods_server.Infrastructure.Repositories
         {
             return await _dbContext.Cities.FirstOrDefaultAsync(c => c.Name == name);
         }
+
+        public async Task<bool> HasProductsAsync(Guid cityId)
+        {
+            return await _dbContext.Products.AnyAsync(p => p.CityId == cityId);
+        }
     }
 }

@@ -6,5 +6,6 @@ namespace goods_server.Core.Interfaces
     public interface IGenreRepo : IGenericRepo<Genre>
     {
         Task<Genre?> GetByNameAsync(string name);
+        Task<bool> HasProductsAsync(Guid genreId);
     }
 }
