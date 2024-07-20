@@ -60,12 +60,12 @@ namespace goods_server.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGenre(Guid id)
         {
-            var result = await _genreService.DeleteGenreAsync(id);
-            if (result)
+            var (success, message) = await _genreService.DeleteGenreAsync(id);
+            if (success)
             {
-                return Ok("Genre deleted successfully.");
+                return Ok(message);
             }
-            return BadRequest("Failed to delete genre.");
+            return BadRequest(message);
         }
     }
 }
