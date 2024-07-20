@@ -28,6 +28,7 @@ namespace goods_server.Infrastructure.AutoMaper
             CreateMap<RequestHistory, RequestHistoryDTO>().ReverseMap();
             CreateMap<RequestHistory, UpdateRequestHistoryDTO>().ReverseMap();
             CreateMap<RequestHistory, GetRequestHistoryDTO>().ReverseMap();
+            CreateMap<RequestHistory, GetRequestHistory2DTO>().ReverseMap();
 
             // ORDER
             CreateMap<Order, OrderDTO>().ReverseMap();

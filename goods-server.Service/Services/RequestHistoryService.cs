@@ -61,38 +61,83 @@ namespace goods_server.Service.Services
             return await _unitOfWork.RequestHistoryRepo.DeleteRequestHistoryAsync(requestId);
         }
 
-        public async Task<PagedResult<GetRequestHistoryDTO>> GetAllRequestHistoriesAsync(RequestHistoryFilter filter)
+
+        public async Task<PagedResult<GetRequestHistory2DTO>> GetAllRequestHistoriesAsync(RequestHistoryFilter Requestfilter)
         {
-            var requestHistoryList = _mapper.Map<IEnumerable<GetRequestHistoryDTO>>(await _unitOfWork.RequestHistoryRepo.GetAllRequestHistories());
-            IQueryable<GetRequestHistoryDTO> filterRequestHistory = requestHistoryList.AsQueryable();
+            var requestHistoryList = _mapper.Map<IEnumerable<GetRequestHistory2DTO>>(await _unitOfWork.RequestHistoryRepo.GetAllRequestHistories());
+            IQueryable<GetRequestHistory2DTO> filterRequestHistory = requestHistoryList.AsQueryable();
 
             // Filtering
-            if (filter.BuyerId.HasValue)
-                filterRequestHistory = filterRequestHistory.Where(rh => rh.BuyerId == filter.BuyerId);
-            if (filter.SellerId.HasValue)
-                filterRequestHistory = filterRequestHistory.Where(rh => rh.SellerId == filter.SellerId);
-            if (filter.ProductSellerId.HasValue)
-                filterRequestHistory = filterRequestHistory.Where(rh => rh.ProductSellerId == filter.ProductSellerId);
-            if (filter.ProductBuyerId.HasValue)
-                filterRequestHistory = filterRequestHistory.Where(rh => rh.ProductBuyerId == filter.ProductBuyerId);
-            if (!string.IsNullOrEmpty(filter.Status)) // Thêm điều kiện lọc cho Status
-                filterRequestHistory = filterRequestHistory.Where(rh => rh.Status == filter.Status);
+            if (Requestfilter.BuyerId != null)
+                filterRequestHistory = filterRequestHistory.Where(x => x.BuyerId.Equals(Requestfilter.BuyerId));
+            if (Requestfilter.SellerId != null)
+                filterRequestHistory = filterRequestHistory.Where(x => x.SellerId.Equals(Requestfilter.SellerId));
+            if (Requestfilter.ProductSellerId != null)
+                filterRequestHistory = filterRequestHistory.Where(x => x.ProductSellerId.Equals(Requestfilter.ProductSellerId));
+            if (Requestfilter.ProductBuyerId != null)
+                filterRequestHistory = filterRequestHistory.Where(x => x.ProductBuyerId.Equals(Requestfilter.ProductBuyerId));
+            if (!string.IsNullOrEmpty(Requestfilter.Status))
+                filterRequestHistory = filterRequestHistory.Where(x => x.Status.Contains(Requestfilter.Status, StringComparison.OrdinalIgnoreCase));
+
+            // Sorting
+            if (!string.IsNullOrEmpty(Requestfilter.SortBy))
+            {
+                switch (Requestfilter.SortBy)
+                {
+                    case "buyerId":
+                        filterRequestHistory = Requestfilter.SortAscending ?
+                            filterRequestHistory.OrderBy(rh => rh.BuyerId) :
+                            filterRequestHistory.OrderByDescending(rh => rh.BuyerId);
+                        break;
+
+                    case "sellerId":
+                        filterRequestHistory = Requestfilter.SortAscending ?
+                            filterRequestHistory.OrderBy(rh => rh.SellerId) :
+                            filterRequestHistory.OrderByDescending(rh => rh.SellerId);
+                        break;
+
+                    case "productSellerId":
+                        filterRequestHistory = Requestfilter.SortAscending ?
+                            filterRequestHistory.OrderBy(rh => rh.ProductSellerId) :
+                            filterRequestHistory.OrderByDescending(rh => rh.ProductSellerId);
+                        break;
+
+                    case "productBuyerId":
+                        filterRequestHistory = Requestfilter.SortAscending ?
+                            filterRequestHistory.OrderBy(rh => rh.ProductBuyerId) :
+                            filterRequestHistory.OrderByDescending(rh => rh.ProductBuyerId);
+                        break;
+
+                    case "status":
+                        filterRequestHistory = Requestfilter.SortAscending ?
+                            filterRequestHistory.OrderBy(rh => rh.Status) :
+                            filterRequestHistory.OrderByDescending(rh => rh.Status);
+                        break;
+
+                    default:
+                        filterRequestHistory = Requestfilter.SortAscending ?
+                            filterRequestHistory.OrderBy(item => GetProperty.GetPropertyValue(item, Requestfilter.SortBy)) :
+                            filterRequestHistory.OrderByDescending(item => GetProperty.GetPropertyValue(item, Requestfilter.SortBy));
+                        break;
+                }
+            }
 
             // Paging
             var pageItems = filterRequestHistory
-                .Skip((filter.PageNumber - 1) * filter.PageSize)
-                .Take(filter.PageSize)
+                .Skip((Requestfilter.PageNumber - 1) * Requestfilter.PageSize)
+                .Take(Requestfilter.PageSize)
                 .ToList();
 
-            return new PagedResult<GetRequestHistoryDTO>
+            return new PagedResult<GetRequestHistory2DTO>
             {
                 Items = pageItems,
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize,
+                PageNumber = Requestfilter.PageNumber,
+                PageSize = Requestfilter.PageSize,
                 TotalItem = filterRequestHistory.Count(),
-                TotalPages = (int)Math.Ceiling((decimal)filterRequestHistory.Count() / filter.PageSize)
+                TotalPages = (int)Math.Ceiling((decimal)filterRequestHistory.Count() / Requestfilter.PageSize)
             };
         }
+
 
         public async Task<GetRequestHistoryDTO> GetRequestHistoryByIdAsync(Guid requestHistoryId)
         {
@@ -100,26 +145,7 @@ namespace goods_server.Service.Services
             return _mapper.Map<GetRequestHistoryDTO>(requestHistory);
         }
 
-        public async Task<PagedResult<GetRequestHistoryDTO>> GetRequestHistoriesByAccountIdAsync(RequestHistoryFilter filter)
-        {
-            var requestHistoryList = _mapper.Map<IEnumerable<GetRequestHistoryDTO>>(await _unitOfWork.RequestHistoryRepo.GetRequestHistoriesByAccountIdAsync(filter.AccountId));
-            IQueryable<GetRequestHistoryDTO> filterRequestHistory = requestHistoryList.AsQueryable();
-
-            // Paging
-            var pageItems = filterRequestHistory
-                .Skip((filter.PageNumber - 1) * filter.PageSize)
-                .Take(filter.PageSize)
-                .ToList();
-
-            return new PagedResult<GetRequestHistoryDTO>
-            {
-                Items = pageItems,
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize,
-                TotalItem = requestHistoryList.Count(),
-                TotalPages = (int)Math.Ceiling((decimal)requestHistoryList.Count() / filter.PageSize)
-            };
-        }
+       
 
         public async Task<bool> UpdateStatusAsync(Guid requestHistoryId, UpdateRequestHistoryStatusDTO statusDto)
         {
@@ -136,6 +162,7 @@ namespace goods_server.Service.Services
             return true;
         }
 
+       
     }
 
 
