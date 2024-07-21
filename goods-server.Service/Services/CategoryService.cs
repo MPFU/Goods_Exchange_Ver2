@@ -71,16 +71,23 @@ namespace goods_server.Service.Services
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<bool> DeleteCategoryAsync(Guid categoryId)
+        public async Task<(bool success, string message)> DeleteCategoryAsync(Guid categoryId)
         {
             var category = await _unitOfWork.CategoryRepo.GetByIdAsync(categoryId);
             if (category == null)
             {
-                return false;
+                return (false, "Category not found");
+            }
+
+            var hasProducts = await _unitOfWork.CategoryRepo.HasProductsAsync(categoryId);
+            if (hasProducts)
+            {
+                return (false, "There are products belonging to this category");
             }
 
             _unitOfWork.CategoryRepo.Delete(category);
-            return await _unitOfWork.SaveAsync() > 0;
+            var result = await _unitOfWork.SaveAsync() > 0;
+            return (result, result ? "Category deleted successfully" : "Failed to delete category");
         }
     }
 }

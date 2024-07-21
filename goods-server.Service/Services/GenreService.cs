@@ -59,16 +59,23 @@ namespace goods_server.Service.Services
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<bool> DeleteGenreAsync(Guid genreId)
+        public async Task<(bool success, string message)> DeleteGenreAsync(Guid genreId)
         {
             var genre = await _unitOfWork.GenreRepo.GetByIdAsync(genreId);
             if (genre == null)
             {
-                return false;
+                return (false, "Genre not found");
+            }
+
+            var hasProducts = await _unitOfWork.GenreRepo.HasProductsAsync(genreId);
+            if (hasProducts)
+            {
+                return (false, "There are products belonging to this genre");
             }
 
             _unitOfWork.GenreRepo.Delete(genre);
-            return await _unitOfWork.SaveAsync() > 0;
+            var result = await _unitOfWork.SaveAsync() > 0;
+            return (result, result ? "Genre deleted successfully" : "Failed to delete genre");
         }
     }
 }

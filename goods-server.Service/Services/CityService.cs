@@ -59,16 +59,23 @@ namespace goods_server.Service.Services
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<bool> DeleteCityAsync(Guid cityId)
+        public async Task<(bool success, string message)> DeleteCityAsync(Guid cityId)
         {
             var city = await _unitOfWork.CityRepo.GetByIdAsync(cityId);
             if (city == null)
             {
-                return false;
+                return (false, "City not found");
+            }
+
+            var hasProducts = await _unitOfWork.CityRepo.HasProductsAsync(cityId);
+            if (hasProducts)
+            {
+                return (false, "There are products belonging to this city");
             }
 
             _unitOfWork.CityRepo.Delete(city);
-            return await _unitOfWork.SaveAsync() > 0;
+            var result = await _unitOfWork.SaveAsync() > 0;
+            return (result, result ? "City deleted successfully" : "Failed to delete city");
         }
     }
 }

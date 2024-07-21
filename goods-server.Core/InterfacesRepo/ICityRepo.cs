@@ -6,5 +6,6 @@ namespace goods_server.Core.Interfaces
     public interface ICityRepo : IGenericRepo<City>
     {
         Task<City?> GetByNameAsync(string name);
+        Task<bool> HasProductsAsync(Guid cityId);
     }
 }
