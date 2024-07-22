@@ -118,10 +118,22 @@ namespace goods_server.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
+        public async Task<IActionResult> GetAllOrders([FromQuery] OrderFilter orderFilter)
         {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return Ok(orders);
+            try
+            {
+                var orders = await _orderService.GetAllOrdersAsync(orderFilter);
+                if (orders == null || !orders.Items.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{orderId}")]
