@@ -35,6 +35,19 @@ namespace goods_server.Infrastructure.Repositories
             return true;
         }
 
+        public async Task<bool> UpdateStatusAsync(Guid orderId, string status)
+        {
+            var order = await _dbContext.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return false;
+            }
+
+            order.Status = status;
+            _dbContext.Orders.Update(order);
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> DeleteOrderAsync(Guid orderId)
         {
             var order = await _dbContext.Orders.FindAsync(orderId);

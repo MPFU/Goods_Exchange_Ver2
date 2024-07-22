@@ -57,6 +57,10 @@ namespace goods_server.Service.Services
             return result;
         }
 
+        public async Task<bool> UpdateOrderStatusAsync(Guid orderId, UpdateOrder2DTO order)
+        {
+            return await _unitOfWork.OrderRepo.UpdateStatusAsync(orderId, order.Status);
+        }
 
         public async Task<bool> DeleteOrderAsync(Guid orderId)
         {
