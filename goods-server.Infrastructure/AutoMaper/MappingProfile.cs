@@ -67,6 +67,7 @@ namespace goods_server.Infrastructure.AutoMaper
 
             /// OrderDetail Mapping
             CreateMap<OrderDetail, OrderDetailDTO>().ReverseMap();
+            CreateMap<OrderDetail, GetOrderDetailDTO>().ReverseMap();
             CreateMap<CreateOrderDetailDTO, OrderDetail>();
             CreateMap<UpdateOrderDetailDTO, OrderDetail>();
 

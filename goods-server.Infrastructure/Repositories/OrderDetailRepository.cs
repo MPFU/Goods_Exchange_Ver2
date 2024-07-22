@@ -20,9 +20,9 @@ namespace goods_server.Infrastructure.Repositories
             return await _dbContext.OrderDetails.FirstOrDefaultAsync(od => od.OrderId == orderId && od.ProductId == productId);
         }
 
-        public async Task<IEnumerable<OrderDetail>> FindAsync(Expression<Func<OrderDetail, bool>> predicate)
+        public async Task<IEnumerable<OrderDetail>> GetOrderDetailsByOrderId(Guid OrderID)
         {
-            return await _dbContext.OrderDetails.Where(predicate).ToListAsync();
+            return await _dbContext.OrderDetails.Include(x=> x.Product).ToListAsync();
         }
     }
 }
