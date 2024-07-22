@@ -1,4 +1,5 @@
 ﻿using goods_server.Contracts;
+using goods_server.Service.FilterModel.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace goods_server.Service.InterfaceService
     {
         Task<Guid?> CreateOrderAsync(OrderDTO order);
         Task<IEnumerable<GetOrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId);
-        Task<IEnumerable<GetOrderDTO>> GetAllOrdersAsync();
+        Task<PagedResult<GetOrderDTO>> GetAllOrdersAsync(OrderFilter orderFilter);
         Task<bool> UpdateOrderAsync(Guid orderId, UpdateOrderDTO order);
         Task<bool> UpdateOrderStatusAsync(Guid orderId, UpdateOrder2DTO order);
         Task<bool> DeleteOrderAsync(Guid orderId);
