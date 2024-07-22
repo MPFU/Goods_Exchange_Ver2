@@ -1,5 +1,6 @@
 ﻿using goods_server.Contracts;
 using goods_server.Service.InterfaceService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace goods_server.API.Controllers
             return Ok(city);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCity([FromBody] CreateCityDTO createCityDTO)
         {
@@ -46,6 +48,7 @@ namespace goods_server.API.Controllers
             return BadRequest("Failed to create city.");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCity(Guid id, [FromBody] UpdateCityDTO updateCityDTO)
         {
@@ -57,6 +60,7 @@ namespace goods_server.API.Controllers
             return BadRequest("Failed to update city.");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCity(Guid id)
         {

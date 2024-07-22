@@ -3,6 +3,7 @@ using goods_server.Contracts;
 using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
 using goods_server.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace goods_server.API.Controllers
@@ -18,7 +19,7 @@ namespace goods_server.API.Controllers
             _requestHistoryService = requestHistoryService;
         }
 
-
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CreateRequestHistory([FromBody] RequestHistoryDTO requestHistoryDto)
         {
@@ -53,8 +54,8 @@ namespace goods_server.API.Controllers
             }
         }
 
-        
 
+        [Authorize(Roles = "User")]
         [HttpGet("{requestHistoryId}")]
         public async Task<IActionResult> GetRequestHistoryById(Guid requestHistoryId)
         {
@@ -125,6 +126,7 @@ namespace goods_server.API.Controllers
             });
         }
 
+        [Authorize(Roles = "User")]
         [HttpDelete("{requestId}")]
         public async Task<IActionResult> DeleteRequestHistory(Guid requestId)
         {
@@ -155,6 +157,7 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [Authorize (Roles = "User")]
         [HttpGet]
         public async Task<IActionResult> GetAllRequestHistories([FromQuery] RequestHistoryFilter filter)
         {

@@ -3,6 +3,7 @@ using goods_server.Contracts;
 using goods_server.Core.Models;
 using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,6 +53,7 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDTO createProduct)
         {
@@ -115,6 +117,7 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [Authorize(Roles = "User")]
         [HttpPut("id")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDTO updateProduct)
         {
@@ -178,6 +181,7 @@ namespace goods_server.API.Controllers
         }
 
 
+        [Authorize(Roles = "User, Moderator")]
         [HttpPut("id")]
         public async Task<IActionResult> UpdateStatusProduct(Guid id, [FromBody] UpdateStatusProductDTO updateProduct)
         {
