@@ -22,7 +22,7 @@ namespace goods_server.Service.Services
             .Build();
             
             var tick = DateTime.Now.Ticks.ToString();
-
+            var ReturnUrl = $"http://localhost:5056/api/VNPay/VNPayReturn/orderID={vNPayDTO.OrderID}";
             var vnpay = new VnPayLibrary();
             vnpay.AddRequestData("vnp_Version", _config["Vnpay:Version"]);
             vnpay.AddRequestData("vnp_Command", _config["Vnpay:Command"]);
@@ -35,7 +35,7 @@ namespace goods_server.Service.Services
             vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + tick);
             vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
 
-            vnpay.AddRequestData("vnp_ReturnUrl", vNPayDTO.ReturnUrl);
+            vnpay.AddRequestData("vnp_ReturnUrl", ReturnUrl);
             vnpay.AddRequestData("vnp_ExpireDate", DateTime.Now.AddHours(1).ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData("vnp_TxnRef", tick);
 
@@ -52,7 +52,7 @@ namespace goods_server.Service.Services
 
             var vnpay = new VnPayLibrary();
 
-            foreach (var (key,value) in collections)
+            foreach (var (key, value) in collections)
             {
                 //get all querystring data
                 if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))

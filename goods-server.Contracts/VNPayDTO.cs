@@ -12,7 +12,7 @@ namespace goods_server.Contracts
 
     public class RequestVNPayDTO
     {
-        public string ReturnUrl { get; set; }
+        public Guid OrderID { get; set; }
         public decimal TotalPrice { get; set; }
     }
 
