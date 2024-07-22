@@ -82,38 +82,14 @@ namespace goods_server.Service.Services
             // Sorting
             if (!string.IsNullOrEmpty(Requestfilter.SortBy))
             {
-                switch (Requestfilter.SortBy)
+                switch (Requestfilter.SortBy.ToLower())
                 {
-                    case "buyerId":
+                    case "createddate":
                         filterRequestHistory = Requestfilter.SortAscending ?
-                            filterRequestHistory.OrderBy(rh => rh.BuyerId) :
-                            filterRequestHistory.OrderByDescending(rh => rh.BuyerId);
+                            filterRequestHistory.OrderBy(o => o.CreatedDate) :
+                            filterRequestHistory.OrderByDescending(o => o.CreatedDate);
                         break;
-
-                    case "sellerId":
-                        filterRequestHistory = Requestfilter.SortAscending ?
-                            filterRequestHistory.OrderBy(rh => rh.SellerId) :
-                            filterRequestHistory.OrderByDescending(rh => rh.SellerId);
-                        break;
-
-                    case "productSellerId":
-                        filterRequestHistory = Requestfilter.SortAscending ?
-                            filterRequestHistory.OrderBy(rh => rh.ProductSellerId) :
-                            filterRequestHistory.OrderByDescending(rh => rh.ProductSellerId);
-                        break;
-
-                    case "productBuyerId":
-                        filterRequestHistory = Requestfilter.SortAscending ?
-                            filterRequestHistory.OrderBy(rh => rh.ProductBuyerId) :
-                            filterRequestHistory.OrderByDescending(rh => rh.ProductBuyerId);
-                        break;
-
-                    case "status":
-                        filterRequestHistory = Requestfilter.SortAscending ?
-                            filterRequestHistory.OrderBy(rh => rh.Status) :
-                            filterRequestHistory.OrderByDescending(rh => rh.Status);
-                        break;
-
+                                            
                     default:
                         filterRequestHistory = Requestfilter.SortAscending ?
                             filterRequestHistory.OrderBy(item => GetProperty.GetPropertyValue(item, Requestfilter.SortBy)) :
