@@ -214,15 +214,28 @@ namespace goods_server.Service.Services
             try
             {
                 var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
-                if(product != null)
+                if (product != null)
                 {
-                    product.Quantity = quantity.Quantity;
-                    _unitOfWork.ProductRepo.Update(product);
-                    var result = await _unitOfWork.SaveAsync() > 0;
-                    return result;
+
+                    var check = product.Quantity - quantity.Quantity;
+                    product.Quantity = check > 0 ? check : 0;
+                    if (product.Quantity <= 0)
+                    {
+                        product.Status = "SoldOut";
+                        _unitOfWork.ProductRepo.Update(product);
+                        var result = await _unitOfWork.SaveAsync() > 0;
+                        return result;
+                    }
+                    else
+                    {
+                        _unitOfWork.ProductRepo.Update(product);
+                        var result = await _unitOfWork.SaveAsync() > 0;
+                        return result;
+                    }
                 }
                 return false;
-            }catch(DbUpdateException)
+            }
+            catch (DbUpdateException)
             {
                 throw;
             }

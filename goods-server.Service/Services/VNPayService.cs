@@ -22,7 +22,7 @@ namespace goods_server.Service.Services
             .Build();
             
             var tick = DateTime.Now.Ticks.ToString();
-            var ReturnUrl = $"http://localhost:5056/api/VNPay/VNPayReturn/orderID={vNPayDTO.OrderID}";
+            var ReturnUrl = $"https://goods-serverapi20240604211747.azurewebsites.net/api/VNPay/VNPayReturn/orderID={vNPayDTO.OrderID}";
             var vnpay = new VnPayLibrary();
             vnpay.AddRequestData("vnp_Version", _config["Vnpay:Version"]);
             vnpay.AddRequestData("vnp_Command", _config["Vnpay:Command"]);

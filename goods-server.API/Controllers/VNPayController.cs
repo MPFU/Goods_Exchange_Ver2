@@ -12,10 +12,17 @@ namespace goods_server.API.Controllers
     public class VNPayController : ControllerBase
     {
         private readonly IVNPay vNPay;
+        private readonly IOrderService _orderService;
+        private readonly IOrderDetailService _orderDetailService;
+        private readonly IProductService _productService;
 
-        public VNPayController( IVNPay vN)
+        public VNPayController( IVNPay vN, IOrderService orderService, IOrderDetailService orderDetailService, IProductService productService)
         {
             vNPay = vN;
+            _orderService = orderService;
+            _orderDetailService = orderDetailService;
+            _productService = productService;
+
         }
 
         [HttpPost("create")]
@@ -29,16 +36,61 @@ namespace goods_server.API.Controllers
         }
 
         [HttpGet("orderID={orderID}")]
-        public IActionResult VNPayReturn(Guid orderID, [FromQuery] VNPayReturnQuery query)
+        public async Task<IActionResult> VNPayReturn(Guid orderID, [FromQuery] VNPayReturnQuery query)
         {
             // Validate the return query parameters and handle the payment result
             // You can add more logic here to process the payment result
 
-            
-            return Ok(new SucceededResponseModel() 
-            { 
-                Message = "Payment successful", 
-                Data = new { query , orderID }
+            if (query.vnp_ResponseCode.Equals("00"))
+            {
+                UpdateOrder2DTO updateOrder2DTO = new UpdateOrder2DTO();
+                updateOrder2DTO.Status = "Success";
+                var check = await _orderService.UpdateOrderStatusAsync(orderID, updateOrder2DTO);
+                if (check)
+                {
+                   var orderLi = await _orderDetailService.GetOrderDetailByOrderIdAsync(orderID);
+                    if(orderLi != null)
+                    {
+                        foreach(var item in orderLi)
+                        {
+                            UpdateQuantityProductDTO quantityProductDTO = new UpdateQuantityProductDTO();
+                            quantityProductDTO.Quantity = item.Quantity;
+                            await _productService.UpdateQuantityProduct(item.ProductId, quantityProductDTO);
+                        }
+                        return Redirect("http://localhost:3000/order/success");
+                    }
+                }
+                else
+                {
+                    return BadRequest(new FailedResponseModel
+                    {
+                        Message = "Update Order Status Fail!"
+                    });
+                }
+                
+            }
+            else
+            {
+                UpdateOrder2DTO updateOrder2DTO = new UpdateOrder2DTO();
+                updateOrder2DTO.Status = "Fail";
+                var check = await _orderService.UpdateOrderStatusAsync(orderID, updateOrder2DTO);
+                if (check)
+                {
+                    return Redirect("http://localhost:3000/order/fail");
+                }
+                else
+                {
+                    return BadRequest(new FailedResponseModel
+                    {
+                        Message = "Update Order Status Fail!"
+                    });
+                }
+               
+            }
+            return Ok(new SucceededResponseModel()
+            {
+                Message = "Payment successful",
+                Data = new { query, orderID }
             });
         }
 
