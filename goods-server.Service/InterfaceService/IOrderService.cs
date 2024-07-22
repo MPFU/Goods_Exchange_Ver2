@@ -9,7 +9,7 @@ namespace goods_server.Service.InterfaceService
 {
     public interface IOrderService
     {
-        Task<bool> CreateOrderAsync(OrderDTO order);
+        Task<Guid?> CreateOrderAsync(OrderDTO order);
         Task<IEnumerable<GetOrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId);
         Task<IEnumerable<GetOrderDTO>> GetAllOrdersAsync();
         Task<bool> UpdateOrderAsync(Guid orderId, UpdateOrderDTO order);
