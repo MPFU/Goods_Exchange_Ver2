@@ -33,6 +33,7 @@ namespace goods_server.Infrastructure.AutoMaper
             // ORDER
             CreateMap<Order, OrderDTO>().ReverseMap();
             CreateMap<Order, UpdateOrderDTO>().ReverseMap();
+            CreateMap<Order, UpdateOrder2DTO>().ReverseMap();
             CreateMap<Order, GetOrderDTO>().ReverseMap();
 
             // REPORT

@@ -28,4 +28,10 @@ namespace goods_server.Contracts
 
     }
 
+    public class UpdateOrder2DTO
+    {
+        public string? Status { get; set; }
+
+    }
+
 }

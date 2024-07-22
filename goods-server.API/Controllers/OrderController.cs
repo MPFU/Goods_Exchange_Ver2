@@ -80,6 +80,25 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrder2DTO order)
+        {
+            try
+            {
+                var result = await _orderService.UpdateOrderStatusAsync(id, order);
+                if (!result)
+                {
+                    return NotFound();
+                }
+
+                return Ok("Update SUCCESS!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("{orderId}")]
         public async Task<IActionResult> DeleteOrder(Guid orderId)
         {
