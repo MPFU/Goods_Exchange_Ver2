@@ -14,7 +14,7 @@ namespace goods_server.Core.InterfacesRepo
         Task<bool> UpdateOrderAsync(Guid orderId, Order order);
         Task<bool> DeleteOrderAsync(Guid orderId);
         Task<Order> GetOrderByIdAsync(Guid orderId);
-
+        Task<bool> UpdateStatusAsync(Guid orderId, string? status);
     }
 
 }

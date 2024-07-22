@@ -35,6 +35,13 @@ namespace goods_server.API.Controllers
             return Ok(orderDetail);
         }
 
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderDetailByOrderId(Guid orderId)
+        {
+            var orderDetails = await _orderDetailService.GetOrderDetailByOrderIdAsync(orderId);
+            return Ok(orderDetails);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateOrderDetail([FromBody] CreateOrderDetailDTO createOrderDetailDTO)
         {

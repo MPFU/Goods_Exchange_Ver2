@@ -13,6 +13,7 @@ namespace goods_server.Service.InterfaceService
         Task<IEnumerable<GetOrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId);
         Task<IEnumerable<GetOrderDTO>> GetAllOrdersAsync();
         Task<bool> UpdateOrderAsync(Guid orderId, UpdateOrderDTO order);
+        Task<bool> UpdateOrderStatusAsync(Guid orderId, UpdateOrder2DTO order);
         Task<bool> DeleteOrderAsync(Guid orderId);
         Task<GetOrderDTO> GetOrderByIdAsync(Guid orderId);
 
