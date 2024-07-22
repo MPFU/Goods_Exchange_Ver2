@@ -209,6 +209,25 @@ namespace goods_server.Service.Services
             }
         }
 
+        public async Task<bool> UpdateQuantityProduct(Guid id, UpdateQuantityProductDTO quantity)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                if(product != null)
+                {
+                    product.Quantity = quantity.Quantity;
+                    _unitOfWork.ProductRepo.Update(product);
+                    var result = await _unitOfWork.SaveAsync() > 0;
+                    return result;
+                }
+                return false;
+            }catch(DbUpdateException)
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> UpdateRatingCommentProduct(Guid id, UpdateRatingProductDTO productDTO)
         {
             try

@@ -35,6 +35,7 @@ namespace goods_server.Service.ServiceExtensions
             services.AddScoped<IReplyCommentService, ReplyCommentService>();
             services.AddScoped<IRequestHistoyService, RequestHistoryService>();
             services.AddScoped<IAzureBlobStorage,AzureBlobService>();
+            services.AddScoped<IVNPay,VNPayService>();
 
             services.AddScoped(x => new BlobServiceClient(configuration.GetConnectionString("AzureBlobStorage")));
             services.AddAutoMapper(typeof(MappingProfile).Assembly);

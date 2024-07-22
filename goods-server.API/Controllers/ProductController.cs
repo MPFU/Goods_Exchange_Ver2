@@ -209,6 +209,37 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [HttpPut("id")]
+        public async Task<IActionResult> UpdateQuantityProduct(Guid id, [FromBody] UpdateQuantityProductDTO quantity)
+        {
+            try
+            {
+                var check = await _productService.GetProduct(id);
+                if (check == null)
+                {
+                    return BadRequest(new FailedResponseModel
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "Not Found That Product"
+                    });
+                }
+                var pro = await _productService.UpdateQuantityProduct(id, quantity);
+                if (pro)
+                {
+                    return Ok(new SucceededResponseModel
+                    {
+                        Status = Ok().StatusCode,
+                        Message = "Update Status Success...",
+                    });
+                }
+                return BadRequest("Update Fail!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("id")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
