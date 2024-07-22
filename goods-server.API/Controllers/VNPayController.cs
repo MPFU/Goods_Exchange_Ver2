@@ -56,7 +56,7 @@ namespace goods_server.API.Controllers
                             {
                                 UpdateQuantityProductDTO quantityProductDTO = new UpdateQuantityProductDTO();
                                 quantityProductDTO.Quantity = item.Quantity;
-                                await _productService.UpdateQuantityProduct(item.ProductId, quantityProductDTO);
+                                await _productService.UpdateQuantityProduct(item.Product.ProductId, quantityProductDTO);
                             }
                             return Redirect("http://localhost:3000/order/success");
                         }
