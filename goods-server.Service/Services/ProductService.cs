@@ -209,6 +209,38 @@ namespace goods_server.Service.Services
             }
         }
 
+        public async Task<bool> UpdateQuantityProduct(Guid id, UpdateQuantityProductDTO quantity)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepo.GetByIdAsync(id);
+                if (product != null)
+                {
+
+                    var check = product.Quantity - quantity.Quantity;
+                    product.Quantity = check > 0 ? check : 0;
+                    if (product.Quantity <= 0)
+                    {
+                        product.Status = "SoldOut";
+                        _unitOfWork.ProductRepo.Update(product);
+                        var result = await _unitOfWork.SaveAsync() > 0;
+                        return result;
+                    }
+                    else
+                    {
+                        _unitOfWork.ProductRepo.Update(product);
+                        var result = await _unitOfWork.SaveAsync() > 0;
+                        return result;
+                    }
+                }
+                return false;
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> UpdateRatingCommentProduct(Guid id, UpdateRatingProductDTO productDTO)
         {
             try

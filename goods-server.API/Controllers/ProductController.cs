@@ -3,6 +3,7 @@ using goods_server.Contracts;
 using goods_server.Core.Models;
 using goods_server.Service.FilterModel;
 using goods_server.Service.InterfaceService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,6 +53,7 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDTO createProduct)
         {
@@ -115,6 +117,7 @@ namespace goods_server.API.Controllers
             }
         }
 
+        [Authorize(Roles = "User")]
         [HttpPut("id")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDTO updateProduct)
         {
@@ -178,6 +181,7 @@ namespace goods_server.API.Controllers
         }
 
 
+        [Authorize(Roles = "User, Moderator")]
         [HttpPut("id")]
         public async Task<IActionResult> UpdateStatusProduct(Guid id, [FromBody] UpdateStatusProductDTO updateProduct)
         {
@@ -193,6 +197,37 @@ namespace goods_server.API.Controllers
                     });
                 }
                 var pro = await _productService.UpdateStatusProduct(id, updateProduct);
+                if (pro)
+                {
+                    return Ok(new SucceededResponseModel
+                    {
+                        Status = Ok().StatusCode,
+                        Message = "Update Status Success...",
+                    });
+                }
+                return BadRequest("Update Fail!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("id")]
+        public async Task<IActionResult> UpdateQuantityProduct(Guid id, [FromBody] UpdateQuantityProductDTO quantity)
+        {
+            try
+            {
+                var check = await _productService.GetProduct(id);
+                if (check == null)
+                {
+                    return BadRequest(new FailedResponseModel
+                    {
+                        Status = BadRequest().StatusCode,
+                        Message = "Not Found That Product"
+                    });
+                }
+                var pro = await _productService.UpdateQuantityProduct(id, quantity);
                 if (pro)
                 {
                     return Ok(new SucceededResponseModel

@@ -21,5 +21,6 @@ namespace goods_server.Service.InterfaceService
         public Task<GetProduct2DTO> GetProductById(Guid id);
         public Task<bool> UpdateRatingProduct(Guid? id, int? rate);
         public Task<bool> UpdateCommentProduct(Guid? proID, Guid? commentID);
+        public Task<bool> UpdateQuantityProduct(Guid id, UpdateQuantityProductDTO quantity);
     }
 }

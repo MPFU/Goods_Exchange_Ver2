@@ -59,6 +59,7 @@ namespace goods_server.API.Controllers
             }
         }
 
+
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] RegisterDTO registerRequest)
         {

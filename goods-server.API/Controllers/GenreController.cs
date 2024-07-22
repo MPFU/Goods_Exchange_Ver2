@@ -1,5 +1,6 @@
 ﻿using goods_server.Contracts;
 using goods_server.Service.InterfaceService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace goods_server.API.Controllers
             return Ok(genre);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateGenre([FromBody] CreateGenreDTO createGenreDTO)
         {
@@ -46,6 +48,7 @@ namespace goods_server.API.Controllers
             return BadRequest("Failed to create genre.");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateGenre(Guid id, [FromBody] UpdateGenreDTO updateGenreDTO)
         {
@@ -57,6 +60,7 @@ namespace goods_server.API.Controllers
             return BadRequest("Failed to update genre.");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGenre(Guid id)
         {

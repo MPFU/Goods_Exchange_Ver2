@@ -1,5 +1,6 @@
 ﻿using goods_server.Contracts;
 using goods_server.Service.InterfaceService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ namespace goods_server.API.Controllers
             return Ok(orderDetails);
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CreateOrderDetail([FromBody] CreateOrderDetailDTO createOrderDetailDTO)
         {

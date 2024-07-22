@@ -1,6 +1,7 @@
 ﻿using artshare_server.WebAPI.ResponseModels;
 using goods_server.Contracts;
 using goods_server.Service.InterfaceService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace goods_server.API.Controllers
@@ -16,6 +17,7 @@ namespace goods_server.API.Controllers
             _orderService = orderService;
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderDTO orderDto)
         {

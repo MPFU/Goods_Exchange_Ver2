@@ -125,4 +125,9 @@ namespace goods_server.Contracts
 
         public string? IsDisplay { get; set; }
     }
+
+    public class UpdateQuantityProductDTO
+    {
+        public int? Quantity { get; set; }
+    }
 }
