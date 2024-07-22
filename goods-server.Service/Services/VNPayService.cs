@@ -14,21 +14,21 @@ namespace goods_server.Service.Services
 {
     public class VNPayService : IVNPay
     {
-        public async Task<string> CreatePaymentUrl( RequestVNPayDTO vNPayDTO)
+        public string CreatePaymentUrl( RequestVNPayDTO vNPayDTO)
         {
             IConfiguration _config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true)
             .Build();
             
-            var tick = DateTime.Now.Ticks.ToString();
+            var tick = DateTime.UtcNow.Ticks.ToString();
             var ReturnUrl = $"https://goods-serverapi20240604211747.azurewebsites.net/api/VNPay/VNPayReturn/orderID={vNPayDTO.OrderID}";
             var vnpay = new VnPayLibrary();
             vnpay.AddRequestData("vnp_Version", _config["Vnpay:Version"]);
             vnpay.AddRequestData("vnp_Command", _config["Vnpay:Command"]);
             vnpay.AddRequestData("vnp_TmnCode", _config["Vnpay:TmnCode"]);
             vnpay.AddRequestData("vnp_Amount", (vNPayDTO.TotalPrice * 100).ToString());
-            vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_CreateDate", DateTime.UtcNow.ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData("vnp_CurrCode", _config["Vnpay:CurrCode"]);
             vnpay.AddRequestData("vnp_IpAddr", "192.168.1.16");
             vnpay.AddRequestData("vnp_Locale", _config["Vnpay:Locale"]);
@@ -36,7 +36,7 @@ namespace goods_server.Service.Services
             vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
 
             vnpay.AddRequestData("vnp_ReturnUrl", ReturnUrl);
-            vnpay.AddRequestData("vnp_ExpireDate", DateTime.Now.AddHours(1).ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_ExpireDate", DateTime.UtcNow.AddDays(1).ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData("vnp_TxnRef", tick);
 
             string paymentUrl = vnpay.CreateRequestUrl(_config["Vnpay:BaseUrl"], _config["Vnpay:HashSecret"]);

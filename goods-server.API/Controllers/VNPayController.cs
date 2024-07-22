@@ -28,7 +28,7 @@ namespace goods_server.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreatePayment([FromBody] RequestVNPayDTO request)
         {
-            var paymentUrl = await vNPay.CreatePaymentUrl(request);
+            var paymentUrl =  vNPay.CreatePaymentUrl(request);
             return Ok(new SucceededResponseModel (){
                 Status = Ok().StatusCode,
                 Data = paymentUrl 
@@ -40,36 +40,57 @@ namespace goods_server.API.Controllers
         {
             // Validate the return query parameters and handle the payment result
             // You can add more logic here to process the payment result
-
-            if (query.vnp_ResponseCode.Equals("00"))
+            try
             {
-                UpdateOrder2DTO updateOrder2DTO = new UpdateOrder2DTO();
-                updateOrder2DTO.Status = "Success";
-                var check = await _orderService.UpdateOrderStatusAsync(orderID, updateOrder2DTO);
-                if (check)
+                if (query.vnp_ResponseCode.Equals("00"))
                 {
-                   var orderLi = await _orderDetailService.GetOrderDetailByOrderIdAsync(orderID);
-                    if(orderLi != null)
+                    UpdateOrder2DTO updateOrder2DTO = new UpdateOrder2DTO();
+                    updateOrder2DTO.Status = "Success";
+                    var check = await _orderService.UpdateOrderStatusAsync(orderID, updateOrder2DTO);
+                    if (check)
                     {
-                        foreach(var item in orderLi)
+                        var orderLi = await _orderDetailService.GetOrderDetailByOrderIdAsync(orderID);
+                        if (orderLi != null)
                         {
-                            UpdateQuantityProductDTO quantityProductDTO = new UpdateQuantityProductDTO();
-                            quantityProductDTO.Quantity = item.Quantity;
-                            await _productService.UpdateQuantityProduct(item.ProductId, quantityProductDTO);
+                            foreach (var item in orderLi)
+                            {
+                                UpdateQuantityProductDTO quantityProductDTO = new UpdateQuantityProductDTO();
+                                quantityProductDTO.Quantity = item.Quantity;
+                                await _productService.UpdateQuantityProduct(item.ProductId, quantityProductDTO);
+                            }
+                            return Redirect("http://localhost:3000/order/success");
                         }
-                        return Redirect("http://localhost:3000/order/success");
                     }
+                    else
+                    {
+                        return BadRequest(new FailedResponseModel
+                        {
+                            Message = "Update Order Status Fail!"
+                        });
+                    }
+
                 }
                 else
                 {
-                    return BadRequest(new FailedResponseModel
+                    UpdateOrder2DTO updateOrder2DTO = new UpdateOrder2DTO();
+                    updateOrder2DTO.Status = "Fail";
+                    var check = await _orderService.UpdateOrderStatusAsync(orderID, updateOrder2DTO);
+                    if (check)
                     {
-                        Message = "Update Order Status Fail!"
-                    });
+                        return Redirect("http://localhost:3000/order/fail");
+                    }
+                    else
+                    {
+                        return BadRequest(new FailedResponseModel
+                        {
+                            Message = "Update Order Status Fail!"
+                        });
+                    }
+
                 }
-                
+                return Redirect("http://localhost:3000/order/fail");
             }
-            else
+            catch (Exception ex)
             {
                 UpdateOrder2DTO updateOrder2DTO = new UpdateOrder2DTO();
                 updateOrder2DTO.Status = "Fail";
@@ -85,13 +106,7 @@ namespace goods_server.API.Controllers
                         Message = "Update Order Status Fail!"
                     });
                 }
-               
-            }
-            return Ok(new SucceededResponseModel()
-            {
-                Message = "Payment successful",
-                Data = new { query, orderID }
-            });
+            }                     
         }
 
     }

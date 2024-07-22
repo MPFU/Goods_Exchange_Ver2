@@ -10,7 +10,7 @@ namespace goods_server.Service.InterfaceService
 {
     public interface IVNPay
     {
-        Task<string> CreatePaymentUrl(RequestVNPayDTO vNPayDTO);
-        Task<VnPaymentResponseModel> PaymentExecute(IQueryCollection collections);
+        public string CreatePaymentUrl(RequestVNPayDTO vNPayDTO);
+        public Task<VnPaymentResponseModel> PaymentExecute(IQueryCollection collections);
     }
 }
