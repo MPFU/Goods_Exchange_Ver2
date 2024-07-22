@@ -8,9 +8,11 @@ namespace goods_server.Service.InterfaceService
     {
         Task<IEnumerable<OrderDetailDTO>> GetAllOrderDetailsAsync();
         Task<OrderDetailDTO?> GetOrderDetailByOrderAndProductIdAsync(Guid orderId, Guid productId);
-        Task<IEnumerable<OrderDetailDTO>> GetOrderDetailByOrderIdAsync(Guid orderId);
+        Task<IEnumerable<GetOrderDetailDTO>> GetOrderDetailByOrderIdAsync(Guid orderId);
         Task<bool> CreateOrderDetailAsync(CreateOrderDetailDTO orderDetail);
         Task<bool> UpdateOrderDetailAsync(Guid orderId, Guid productId, UpdateOrderDetailDTO orderDetail);
         Task<bool> DeleteOrderDetailAsync(Guid orderId, Guid productId);
+
+
     }
 }

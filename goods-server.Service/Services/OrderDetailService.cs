@@ -32,10 +32,10 @@ namespace goods_server.Service.Services
             return _mapper.Map<OrderDetailDTO>(orderDetail);
         }
 
-        public async Task<IEnumerable<OrderDetailDTO>> GetOrderDetailByOrderIdAsync(Guid orderId)
+        public async Task<IEnumerable<GetOrderDetailDTO>> GetOrderDetailByOrderIdAsync(Guid orderId)
         {
-            var orderDetails = await _unitOfWork.OrderDetailRepo.FindAsync(od => od.OrderId == orderId);
-            return _mapper.Map<IEnumerable<OrderDetailDTO>>(orderDetails);
+            var orderDetails = await _unitOfWork.OrderDetailRepo.GetOrderDetailsByOrderId(orderId);
+            return _mapper.Map<IEnumerable<GetOrderDetailDTO>>(orderDetails);
         }
 
         public async Task<bool> CreateOrderDetailAsync(CreateOrderDetailDTO orderDetail)

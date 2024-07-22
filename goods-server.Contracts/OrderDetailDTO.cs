@@ -24,4 +24,13 @@
         public int Quantity { get; set; }
         public decimal Price { get; set; }
     }
+    public class GetOrderDetailDTO
+    {
+        public Guid OrderId { get; set; }
+        public GetProduct2DTO Product { get; set; }
+        public string ProductName { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+    }
+
 }
