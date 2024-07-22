@@ -2,6 +2,7 @@
 using goods_server.Contracts;
 using goods_server.Core.InterfacesRepo;
 using goods_server.Core.Models;
+using goods_server.Service.FilterModel.Helper;
 using goods_server.Service.InterfaceService;
 using System;
 using System.Collections.Generic;
@@ -67,10 +68,63 @@ namespace goods_server.Service.Services
             return await _unitOfWork.OrderRepo.DeleteOrderAsync(orderId);
         }
 
-        public async Task<IEnumerable<GetOrderDTO>> GetAllOrdersAsync()
+        public async Task<PagedResult<GetOrderDTO>> GetAllOrdersAsync(OrderFilter orderFilter)
         {
-            var orders = await _unitOfWork.OrderRepo.GetAllAsync();
-            return _mapper.Map<IEnumerable<GetOrderDTO>>(orders);
+            var orderList = _mapper.Map<IEnumerable<GetOrderDTO>>(await _unitOfWork.OrderRepo.GetAllAsync());
+            IQueryable<GetOrderDTO> filterOrder = orderList.AsQueryable();
+
+            // Filtering
+            if (orderFilter.OrderId != null)
+                filterOrder = filterOrder.Where(x => x.OrderId == orderFilter.OrderId);
+            if (orderFilter.CustomerId != null)
+                filterOrder = filterOrder.Where(x => x.CustomerId == orderFilter.CustomerId);
+            if (orderFilter.OrderDate != null)
+                filterOrder = filterOrder.Where(x => x.OrderDate == orderFilter.OrderDate);
+            if (orderFilter.TotalPrice != null)
+                filterOrder = filterOrder.Where(x => x.TotalPrice == orderFilter.TotalPrice);
+            if (!string.IsNullOrEmpty(orderFilter.Status))
+                filterOrder = filterOrder.Where(x => x.Status.Contains(orderFilter.Status, StringComparison.OrdinalIgnoreCase));
+
+            // Sorting
+            if (!string.IsNullOrEmpty(orderFilter.SortBy))
+            {
+                switch (orderFilter.SortBy.ToLower())
+                {
+                    case "orderdate":
+                        filterOrder = orderFilter.SortAscending ?
+                            filterOrder.OrderBy(o => o.OrderDate) :
+                            filterOrder.OrderByDescending(o => o.OrderDate);
+                        break;
+
+                    case "totalprice":
+                        filterOrder = orderFilter.SortAscending ?
+                            filterOrder.OrderBy(o => o.TotalPrice) :
+                            filterOrder.OrderByDescending(o => o.TotalPrice);
+                        break;
+
+                    default:
+                        filterOrder = orderFilter.SortAscending ?
+                            filterOrder.OrderBy(item => GetProperty.GetPropertyValue(item, orderFilter.SortBy)) :
+                            filterOrder.OrderByDescending(item => GetProperty.GetPropertyValue(item, orderFilter.SortBy));
+                        break;
+                }
+            }
+
+
+            // Paging
+            var pageItems = filterOrder
+                .Skip((orderFilter.PageNumber - 1) * orderFilter.PageSize)
+                .Take(orderFilter.PageSize)
+                .ToList();
+
+            return new PagedResult<GetOrderDTO>
+            {
+                Items = pageItems,
+                PageNumber = orderFilter.PageNumber,
+                PageSize = orderFilter.PageSize,
+                TotalItem = filterOrder.Count(),
+                TotalPages = (int)Math.Ceiling((decimal)filterOrder.Count() / orderFilter.PageSize)
+            };
         }
 
         public async Task<GetOrderDTO> GetOrderByIdAsync(Guid orderId)
