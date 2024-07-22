@@ -22,15 +22,16 @@ namespace goods_server.Service.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateOrderAsync(OrderDTO orderDto)
+        public async Task<Guid?> CreateOrderAsync(OrderDTO orderDto)
         {
             var order = _mapper.Map<Order>(orderDto);
             order.OrderId = Guid.NewGuid(); // Tạo một Guid mới
             order.OrderDate = DateTime.UtcNow;
             await _unitOfWork.OrderRepo.AddAsync(order);
             var result = await _unitOfWork.SaveAsync() > 0;
-            return result;
+            return result ? order.OrderId : null;
         }
+
 
 
 
