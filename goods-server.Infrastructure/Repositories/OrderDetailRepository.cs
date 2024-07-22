@@ -22,7 +22,7 @@ namespace goods_server.Infrastructure.Repositories
 
         public async Task<IEnumerable<OrderDetail>> GetOrderDetailsByOrderId(Guid OrderID)
         {
-            return await _dbContext.OrderDetails.Include(x=> x.Product).ToListAsync();
+            return await _dbContext.OrderDetails.Include(x=> x.Product).Where(x=> x.OrderId.Equals(OrderID)).ToListAsync();
         }
     }
 }
